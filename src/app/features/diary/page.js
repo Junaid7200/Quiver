@@ -1,0 +1,1 @@
+// the code for the diary main page will be here

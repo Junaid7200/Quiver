@@ -1,0 +1,5 @@
+SIGN-UP PAGE:
+purple color in the 'create account' button: #5222D0
+color of the 'sign in' button at the bottom of the sign-up page: #26223A
+background color of the form: #1E1E1E
+background color of the entire page: #09090B

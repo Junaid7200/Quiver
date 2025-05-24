@@ -1,102 +1,221 @@
-// we will use this page to signup the user
-'use client' // by default, components are only server-side (meaning you cannot use anything like onClick etc since that stuff is all client-side). in-order to use client-side stuff, you need to add 'use client' at the top of the file. this is supposed to be the signup page so obviously, we will probably use forms etc and client-side stuff will be needed.
-
-  import { useState } from 'react'; //react is just a library/package that is installed by default when we make a nextjs app, just like time or random in python. useState is called a hook, and a hook is simply a special type of react function (if a function has 'use' in its name then its a hook), it lets you 'hook in' to react's features from your component. so all we did is import a special function from a library.
-
-  // as for what does useState do, well its a function, so it accepts arguments and returns a value. it accepts 1 args, it is the initial value of the state (think of state as a local variable that is only accessible in this component). and useState returns an array with 2 values, the first will be the value of the state (in the first render, it will just be the arg you passed) and the second is a function that will be used to update the value of the state (we will call this function and it will change the value of the state and as soon as the value of the state changes, react will re-render the component and show the new value of the state in the UI).
-
-  import Image from 'next/image'; // again, next is a library/package and we import Image from it which is a built-in component that is used to display images, its just like the img tag from html but much more optimized so its recommended to use this component instead of img tag.
-
-  import Link from 'next/link'; // Link is a built-in component that is used to create links in nextjs. it is just like the a (anchor tag) tag from html but much more optimized so its recommended to use this component instead of a tag. it also has some extra features like prefetching and client-side navigation which makes it faster than the a tag.
-
-
-import Divider from '../../components/orDivider';
-import PasswordInput from '../../components/passwordInput'; 
+"use client"; // cz we will use client components here (form)
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import InputField from '../../components/InputField';
+import PasswordInput from '../../components/passwordInput';
+import Button from '../../components/Button';
+import Divider from '../../components/Divider';
+import SocialAuthButton from '../../components/AuthSocialButton';
 import GoogleIcon from '../../components/googleIcon';
-
-
-
-  const globeGirl = '/Assets/globe-girl.gif'
-
-
+import FacebookIcon from '../../components/FacebookIcon';
+import AppleIcon from '../../components/AppleIcon';
 
 
 
 
-  export default function SignupPage() {  // ok, this is a simple JS function that we make normally, it just has 2 new keywords, export and default.
-  // export is used to let this function be used in other files (it can basically be exported to other files) and default is used to let this function be renamed (meaning we won't have to use that {} and then write the name in there, we can name it anything we want when we export). there can only be one default function in a file. whichever function is the default, that is the main thing of the file.
 
-    const [username, setUsername] = useState(''); // so here we give initial value of our state as '' and that is returned and stored in the first part of the array called username
-    //So, useState('') takes '' as input (the initial value) and returns the array [current state value, state updater function].
-    const [email, setEmail] = useState('');
+
+
+
+
+
+export default function SignUpPage() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    agreeToTerms: false
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Basic validation
+    if (!formData.agreeToTerms) {
+      alert('You must agree to the terms and conditions');
+      return;
+    }
     
-      const [password, setPassword] = useState(''); 
-      const [confirmPassword, setConfirmPassword] = useState(''); 
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
 
+    // Here you would integrate with Supabase for authentication
+    try {
+      // Placeholder for Supabase signup
+      console.log('Signing up user:', formData);
+      // Redirect to dashboard after successful signup
+      // router.push('/dashboard');
+    } catch (error) {
+      console.error('Signup error:', error);
+      alert('Error creating account. Please try again.');
+    }
+  };
 
-
-
-
-    const handleSignup = (e) => { 
-      // const handleSignup is just a variable but we initialize it with a function. the () are the function parameters, the e in the () is the event object (just like in those forms that we made in lab 9 and 10). the => is just used to separate the function name from the function body which is in the {}.
-
-      e.preventDefault(); // like normal, we do event.preventDefault() to prevent the default behavior of the form (which is to refresh the page). this is just like how we did it in lab 9 and 10.
-      console.log('Creating account with:', { username, email });
-      // Here you would typically call an API to create the user
-    };
-
-    return (
-      <div className="h-screen w-screen flex overflow-hidden" style={{ background: 'linear-gradient(90deg, #0085FF 24%, #003465 100%)' }}>
-        <div className="w-1/2 flex items-center justify-center">
+  const handleSocialSignUp = (provider) => {
+    // Placeholder for social signup logic
+    console.log(`Sign up with ${provider}`);
+  };  
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-[#09090B] text-white px-4 py-6">
+      <div className="min-w-[50%] w-full max-w-sm">
+        <div className="flex justify-center mb-6">
           <Image 
-            src={globeGirl} 
-            alt="globe girl" 
-            width={500} 
-            height={500} 
-            className="object-contain" 
+            src="/Assets/quiver-logo.png" 
+            alt="Quiver Logo" 
+            width={80} 
+            height={80} 
+            className="object-contain"
           />
         </div>
-        <div className='w-1/2 flex items-center justify-center'>
-          <form onSubmit={handleSignup} className='w-screen flex items-center justify-center flex-col'>
-            <h1 className='font-bold text-[50px] text-white' >
-            Sign Up
-            </h1>
-            <input 
-              type="text" 
+        
+        <div className="bg-[#1E1E1E] rounded-2xl py-15 px-40 w-full">
+          <h1 className="text-2xl font-semibold text-center mb-6">Create Your Account</h1>
+
+          <form onSubmit={handleSubmit} className="space-y-4 mb-10" >
+            <div className="flex gap-4">
+              <InputField
+                id="firstName"
+                placeholder="First name..."
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+              <InputField 
+                id="lastName" 
+                placeholder="Last name..." 
+                value={formData.lastName} 
+                onChange={handleChange} 
+                required
+              />
+            </div>
+            <InputField 
+              id="username" 
               placeholder="Username" 
-              value={username} 
-              onChange={(e) => setUsername(e.target.value)} 
-              className="w-[450px] h-[48px] mt-10 bg-white placeholder:text-gray-500 text-black rounded-md px-4" 
+              value={formData.username} 
+              onChange={handleChange} 
+              required
             />
-            <input 
+            <InputField 
+              id="email" 
               type="email" 
-              placeholder="Email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              className="w-[450px] h-[48px] mt-6 bg-white placeholder:text-gray-500 text-black rounded-md px-4"
+              placeholder="Email address" 
+              value={formData.email} 
+              onChange={handleChange} 
+              required
             />
-          {/* we will make a div, we will have an input and a btn in that div. the btn will be the eye we imported from lucide-react. but the eye is inside the input field so we will make the entire div relative and the btn absolute. this logic is in the passwordInput.js file in components folder.*/}
-          <div className="relative w-[450px] mt-6">
-            <PasswordInput placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-          </div>
-          <div className='relative w-[450px] mt-6'>
-            <PasswordInput placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
-          </div>
-            <button
-            className="w-[450px] h-[62px] mt-6 bg-[#181E5F] text-white rounded-md px-4">
-            Sign Up
-            </button>
-            <p className='text-white mt-4'>Already have an account? <Link href="/login" className='text-white underline'>Log In</Link></p>
-            <p className='text-white mt-4'>By signing up, you agree to our <Link href="/terms" className='text-white underline'>Terms of Service</Link> and <Link href="/privacy" className='text-white underline'>Privacy Policy</Link>.</p>
-            <p className='text-white mt-4'>We promise not to share your information with the aliens.</p>
-            <Divider />
-            <button
-            className="w-[450px] h-[62px] bg-white text-gray-700 rounded-md flex items-center justify-center font-medium">
-              <GoogleIcon />
-              <span className="ml-2">Continue with Google</span>
-            </button>
+            
+            <PasswordInput 
+              id="password" 
+              placeholder="Create password" 
+              value={formData.password} 
+              onChange={handleChange} 
+              required
+            />
+            
+            <PasswordInput 
+              id="confirmPassword" 
+              placeholder="Confirm password" 
+              value={formData.confirmPassword} 
+              onChange={handleChange} 
+              required
+            />  
+            <div className="flex items-start sm:items-center justify-between mb-4 gap-4">
+              <div className="flex items-center">
+                <input 
+                  type="checkbox" 
+                  id="agreeToTerms" 
+                  name="agreeToTerms"
+                  checked={formData.agreeToTerms}
+                  onChange={handleChange}
+                  className="sr-only"
+                />
+                      <label 
+                      htmlFor="agreeToTerms" 
+                      className={`
+                      w-5 h-5 border-[1px] cursor-pointer flex items-center justify-center transition-all duration-200
+                      ${formData.agreeToTerms 
+                        ? 'bg-[#5222D0] border-[#5222D0]' 
+                        : 'bg-transparent border-gray-500'
+                      }
+                    `}            
+                    >
+        
+                            {formData.agreeToTerms && (
+                              <svg 
+                          className="w-3 h-3 text-white" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={3} 
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      )}
+                    </label>
+                              <label htmlFor="agreeToTerms" className="text-sm text-gray-400 ml-2">
+                  I Agree with all of your <Link href="/terms" className="text-[#5529C9] hover:underline">Terms & Conditions</Link>
+                </label>
+              </div>
+              <Button 
+                type="submit" 
+                primary 
+                className="px-6 whitespace-nowrap"
+              >
+                Create Account <span className="ml-2">→</span>
+              </Button>
+            </div>
           </form>
+            <Divider text="SIGN UP WITH" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <SocialAuthButton
+        icon={<GoogleIcon />}
+        text="Google"
+        borderColor="white"
+        onClick={handleChange}
+      />
+      <SocialAuthButton
+        icon={<FacebookIcon />}
+        text="Facebook"
+        borderColor="#1877F2"
+        onClick={handleChange}
+      />
+      
+      <SocialAuthButton
+        icon={<AppleIcon />}
+        text="Apple"
+        borderColor="white"
+        onClick={handleChange}
+      />
+          </div>
         </div>
-  </div>
-    );
-  }
+        
+        <div className="flex items-center justify-center mt-5 space-x-2">
+          <p className="text-gray-400 text-sm">Already have an account?</p>
+          <Link 
+            href="/auth/login" 
+            className="inline-block bg-[#26223A] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors text-sm hover:underline hover:bg-[#5222D0]"
+          >
+            Sign In
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}

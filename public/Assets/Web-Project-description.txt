@@ -1,0 +1,160 @@
+Web Project
+Quiver: Aim, Note, Navigate
+
+Core Functionalities:
+Navigation & Structure
+1.	Main Dashboard with three primary sections (To-Do, Diary, Notes)
+2.	Expandable/Collapsible Views for to-do lists
+3.	Search Functionality across all content types
+4.	Theme Switcher with at least two themes
+To-Do List Module
+1.	 List Management: 
+•	Create new to-do lists
+•	Preview mode showing partial content of each list
+•	Expandable view for focused work on a specific list
+•	Archive completed lists
+2.	 Task Management: 
+•	Add/edit/delete tasks
+•	Mark tasks as complete
+•	Set due dates and priorities
+•	Add subtasks/nested items
+•	Drag-and-drop reordering
+•	Tags for organizing
+•	Sort By (due date or by priority) (optional)
+•	Visual Task Completion Feedback (animation + archive in real time)
+Diary Module
+1.	Entry Management: 
+o	Create dated entries with templated layouts
+o	List-like view that shows all entries
+o	Daily prompt suggestions
+o	Story-worthy section and main section in template
+2.	Entry Features: 
+o	Photo/image attachment
+o	Privacy options/password protection
+Note-Taking Module
+1.	Note Management: 
+o	Create notes with a builtin templates
+o	Organize notes in folders/categories
+2.	Template System: 
+o	Blank page
+o	Project planning
+o	Study notes
+Journaling Module:
+1.	Entry Management:
+o	Create Entries
+o	Edit Entries.
+o	Delete Entries
+o	Prompt Selection (extra):
+i.	•  Pre-defined Prompts: Offer a library of built-in journaling prompts. 
+ii.	•  AI-Generated Prompts: Provide an option to generate prompts using AI. Allow users to select prompt categories or "vibes" (e.g., "Gratitude," "Mindfulness," "Goal Setting," "Emotional Release").
+o	Entry Organization:
+i.	Tags/Categories: Allow users to categorize journal entries (e.g., "Gratitude," "Personal Growth").
+Text Formatting 
+o	Bold, italic, underline
+o	Headings (H1, H2, H3)
+o	Bullet and numbered lists
+o	Text alignment
+o	Hyperlinks
+o	Text highlighting
+o	Text color options
+User Experience
+1.	Responsive Design for mobile/desktop
+2.	Any two themes
+3.	Customizable Sidebar for quick access to favorites (extra)
+Data Management (extra)
+1.	Export Options (PDF, plain text, markdown) 
+2.	Auto-save while typing 
+Productivity Enhancements (extra)
+1.	Reminders for to-do items
+2.	Tagging System across all content types
+Integrated Calendar View
+1.	Interactive Calendar UI showing a monthly view by default 
+o	Visual indicators on dates that have content (different colors/symbols for diary entries, to-dos, notes) (extra)
+o	Quick navigation between months/years
+2.	Daily Aggregation Page 
+o	When clicking on any date, a single page displays all content from that day
+o	Content separated into clearly defined sections: 
+	Diary entry for the day
+	To-do lists due/created on that day
+	Notes created or edited on that day
+3.	Quick Actions 
+o	Create new content of any type directly from the calendar view (extra)
+o	Drag and drop to reschedule to-do items  
+o	Preview snippets of content on hover (extra)
+
+Pages (from a design perspective):
+1. Authentication Pages (2 pages)
+•	Signup Page: For new user registration.
+•	Login Page: For user authentication.
+2. Main Hub (1 page)
+•	Dashboard: 
+o	Provides an overview and navigation to the main feature sections.
+o	Can include summaries or recent activity snippets.
+3. Core Feature Pages (5 pages)
+•	Diary Page: 
+o	Displays a list of diary entries.
+o	Allows creating new entries.
+o	Provides access to individual entry views.
+•	Journaling Page: 
+o	Displays a list of journal entries.
+o	Allows creating new entries with prompts.
+o	Provides access to individual entry views.
+•	Notes Page: 
+o	Displays a list of notes, possibly organized by categories.
+o	Allows creating new notes.
+o	Provides access to individual note views.
+•	To-Do Page: 
+o	This page will primarily display all the user's to-do lists.
+o	Functionalities: 
+	Create new to-do lists.
+	Display existing to-do lists (showing partial content/summaries).
+	Navigation/interaction to view individual to-do lists in detail.
+	Display for archived to-do lists
+4. Detailed Views/Functionality
+•	To-Do List Detail View: 
+o	Not a separate page per say, but will have to design it as well
+•	Diary Entry Detail View: 
+o	When a user clicks on a diary entry on the Diary Page, this view will show the full content of that entry.
+o	It might be the same page with content changed or a modal/overlay.
+o	Functionalities: 
+	Display the complete entry.
+	Enable editing of the entry.
+•	Journal Entry Detail View: 
+o	Similar to the Diary Entry Detail View, this will display the full content of a selected journal entry.
+o	Enable editing of the entry.
+•	Note Detail View: 
+o	Displays the full content of a selected note.
+o	Enables editing of the note.
+•	Pages to design (9-10 pages):
+o	To-do list expandable (empty and populated)
+o	Diary entry (empty and populated)
+o	Journal entry (empty and populated)
+o	Note entry (empty and populated)
+o	Completed to do list in the archived folder
+o	Expandable view if user clicks on generate AI prompts (extra)
+4. Calendar and Aggregation (extra, 2 pages)
+•	Calendar Page: 
+o	An integrated calendar view.
+o	Functionalities: display entries, visual indicators for content, navigation, quick actions.   
+•	Daily Aggregation Page: 
+o	Displays all content (diary, to-do, notes) for a selected day.   
+5. Settings and Management (1 page; extra)
+•	Settings Page: 
+o	For user preferences, themes, account management, and potentially export options.
+
+Extra Details:
+
+To-Do List Detail View: 
+•	This is where the "expandable view" comes in.
+•	Not a separate page in the traditional sense. Instead, it's a dynamic section within the To-Do Page.
+•	When a user clicks on a to-do list on the To-Do Page, this section expands (or a modal/overlay appears) to show: 
+o	All tasks within that list.
+o	Add/edit/delete tasks.
+o	Mark tasks as complete, set due dates/priorities, etc.
+•	This keeps the user within the To-Do Page for a smoother experience.
+•	the To-Do List Detail View is not a separate, distinct page that the browser loads as a new URL.
+Navigation Consistency: Ensure consistent navigation elements (e.g., a sidebar or header) are present across most pages to help users move between sections easily.
+If you don't think your users need folder for notes’ organization, you could simplify by:
+1.	Removing the Folders table entirely and just using tags for organization
+2.	Simplifying to just a "category" field in the Notes table without the nested folder capability
+

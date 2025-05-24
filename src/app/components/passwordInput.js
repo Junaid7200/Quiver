@@ -8,7 +8,8 @@ export default function PasswordInput({
   onChange, 
   placeholder = "Enter your password", 
   name,
-  required = false
+  required = false,
+  error
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,7 +33,7 @@ export default function PasswordInput({
           onChange={onChange}
           placeholder={placeholder}
           required={required}
-          className="w-full py-2.5 px-4 bg-[#1E1E1E] text-gray-200 rounded-md outline-none focus:ring-1 focus:ring-[#5222D0] border border-gray-500"
+          className={`w-full py-2.5 px-4 bg-[#1E1E1E] text-gray-200 rounded-md outline-none focus:ring-1 focus:ring-[#5222D0] border ${error ? 'border-red-500' : 'border-gray-500'}`}
         />
         <button
           type="button"
@@ -50,10 +51,10 @@ export default function PasswordInput({
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
               <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-            </svg>
-          )}
+            </svg>          )}
         </button>
       </div>
+      {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
     </div>
   );
 }

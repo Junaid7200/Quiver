@@ -13,10 +13,10 @@ export default function HomePage() {
                         hover:bg-opacity-90 transition-all">
           Sign Up
         </Link>
-        <Link href="/auth/signup" 
+        <Link href="/auth/signin" 
               className="px-8 py-3 border-2 border-white text-white font-medium rounded-lg 
                         hover:bg-white hover:bg-opacity-10 transition-all">
-          Log In
+          Sign In
         </Link>
       </div>
     </div>

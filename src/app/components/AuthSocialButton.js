@@ -3,23 +3,22 @@ const SocialAuthButton = ({ icon, text, borderColor = "white", onClick }) => {
     <button
       onClick={onClick}
       className={`
-        flex items-center w-full px-4 py-3 bg-transparent rounded-lg 
+        flex items-center w-full bg-transparent 
         border-2 transition-all duration-200 hover:bg-gray-700 cursor-pointer
       `}
       style={{ borderColor }}
     >
       {/* Icon container - white background square */}
-      <div className="w-8 h-8 bg-transparent rounded flex items-center justify-center mr-4 flex-shrink-0">
+      <div className="h-full bg-white flex items-center justify-center px-4">
         {icon}
       </div>
       
       {/* Text */}
-      <span className="text-white font-medium text-center flex-1">
+      <span className="text-white font-medium text-center flex-1 py-3">
         {text}
       </span>
     </button>
   );
 };
-
 
 export default SocialAuthButton;

@@ -14,7 +14,7 @@ export default function HeaderButtons() {
         router.push('../../auth/signup')
     }
     return (
-        <div className="flex justify-between items-center h-[40px] w-[464px]">
+        <div className="flex justify-between items-center h-[70px] w-[464px]">
             <Link href="" className="text-[#635C70]">Features</Link>
             <Link href="" className="text-[#635C70] ">Pricing</Link>
             <Link href="" className="text-[#635C70]">About</Link>

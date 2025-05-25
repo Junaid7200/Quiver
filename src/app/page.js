@@ -1,13 +1,21 @@
 import Image from "next/image"
 import HeaderButtons from './components/LandingPageNavBar';
 import PageFooter from './components/landingPageFooter';
+import { useRouter } from "next/navigation";
 
 export default function indexPage() {
+    const router = useRouter()
+    function getStartedFree(){
+        router.push('');
+    }
+    function watchDemo(){
+        router.push('');
+    }
     return (
         <div className="w-full flex flex-col bg-black h-[100%]">
             <header className="bg-[#09090B] w-[100%] h-[70px] flex justify-between items-center px-[40px] border-b border-solid border-[#E3DEED]">
                 <div className="flex h-[100%] items-center">
-                    <Image src="/Assets/quiver-logo.png" alt='Quiver' width={50} height={50} className="mr-[10px]" />
+                    <Image src="/Assets/quiver-logo.svg" alt='Quiver' width={50} height={50} className="mr-[10px]" />
                     <p className="text-[28px]">Quiver</p>
                 </div>
                 <HeaderButtons />
@@ -74,8 +82,8 @@ export default function indexPage() {
                     <p className='text-[#A1A1AA] text-lg mb-[4%] text-center'>Join thousands of students who are studying smarter with Notus. Get started for free today.</p>
                     <div className="flex justify-center items-center w-[100%] mb-[4%]">
                         <div className="Buttons flex w-[45%] justify-between">
-                            <button className='bg-[#5222D0] text-white rounded-lg px-[3%] py-[4%] tracking-wider'>Get Started Free</button>
-                            <button className='bg-white text-black rounded-lg px-[3%] py-[4%] tracking-wider'>Watch Demo</button>
+                            <button className='bg-[#5222D0] text-white rounded-lg px-[3%] py-[4%] tracking-wider' onClick={getStartedFree}>Get Started Free</button>
+                            <button className='bg-white text-black rounded-lg px-[3%] py-[4%] tracking-wider' onClick={watchDemo}>Watch Demo</button>
                         </div>
                     </div>
                     <p className='text-[#A1A1AA] text-center'>No credit card required. Cancel anytime.</p>

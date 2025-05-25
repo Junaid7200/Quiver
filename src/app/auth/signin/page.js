@@ -5,6 +5,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { createClient } from '../../../utils/supabase/client';
 import InputField from '../../components/InputField';
 import PasswordInput from '../../components/passwordInput';
 import Button from '../../components/Button';
@@ -16,6 +18,9 @@ import Divider from '../../components/Divider';
 
 
 export default function SignInPage() {
+    const router = useRouter();
+    const supabase = createClient();
+    
     const [formData, setFormData] = useState({
         identifier: '', // can be username or email
         password: '',
@@ -26,6 +31,8 @@ export default function SignInPage() {
         identifier: '',
         password: ''
     });
+    
+    const [isLoading, setIsLoading] = useState(false);
 
 const handleChange = (e) => {
   const { name, value, type, checked } = e.target;
@@ -64,9 +71,7 @@ const handleChange = (e) => {
         
         setFormErrors(errors);
         return isValid;
-    };
-
-    const handleSubmit = async (e) => {
+    };    const handleSubmit = async (e) => {
         e.preventDefault();
         
         // Validate form before submission
@@ -74,12 +79,96 @@ const handleChange = (e) => {
             return;
         }
         
-        // Here you'll implement the login logic
-        // You can check if identifier looks like an email or username
-        const isEmail = formData.identifier.includes('@');
-        console.log(`Attempting to log in with ${isEmail ? 'email' : 'username'}`);
+        setIsLoading(true);
         
-        // Then authenticate with appropriate backend method
+        try {
+            // Check if identifier looks like an email or username
+            const isEmail = formData.identifier.includes('@');
+            let email = formData.identifier;
+            
+            // If it's a username, we need to find the email first
+            if (!isEmail) {
+                const { data: userData, error: userError } = await supabase
+                    .from('users')
+                    .select('email')
+                    .eq('username', formData.identifier)
+                    .single();
+                
+                if (userError || !userData) {
+                    setFormErrors(prev => ({
+                        ...prev,
+                        identifier: 'Username not found'
+                    }));
+                    return;
+                }
+                
+                email = userData.email;
+            }
+            
+            // Sign in with email and password
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: formData.password,
+            });
+            
+            if (error) {
+                if (error.message.includes('Invalid login credentials')) {
+                    setFormErrors(prev => ({
+                        ...prev,
+                        password: 'Invalid email/username or password'
+                    }));
+                } else {
+                    setFormErrors(prev => ({
+                        ...prev,
+                        password: error.message
+                    }));
+                }
+                return;
+            }
+            
+            if (data.user) {
+                // Update last login time
+                await supabase
+                    .from('users')
+                    .update({ last_login: new Date().toISOString() })
+                    .eq('id', data.user.id);
+                
+                console.log('User signed in successfully!');
+                router.push('/dashboard');
+            }
+        } catch (error) {
+            console.error('Signin error:', error);
+            setFormErrors(prev => ({
+                ...prev,
+                password: 'An error occurred during signin. Please try again.'
+            }));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    const handleSocialSignIn = async (provider) => {
+        try {
+            setIsLoading(true);
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: provider,
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`
+                }
+            });
+            
+            if (error) {
+                console.error(`Error with ${provider} signin:`, error);
+                setFormErrors(prev => ({
+                    ...prev,
+                    identifier: `Error signing in with ${provider}`
+                }));
+            }
+        } catch (error) {
+            console.error('Social signin error:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -153,37 +242,41 @@ const handleChange = (e) => {
                     </label>
                               <label htmlFor="rememberMe" className="text-sm text-gray-400 ml-2"> Remember me
                 </label>
-              </div>
-                <Button 
+              </div>                
+              <Button 
                 type="submit" 
                 primary 
+                disabled={isLoading}
+                onClick={handleSubmit}
                 className="px-6 whitespace-nowrap">
-                Sign In <span className="ml-2">→</span>
+                {isLoading ? 'Signing In...' : 'Sign In'} <span className="ml-2">→</span>
               </Button>
                 </div>
                 </form>
 
 
-                    <Divider text="Or continue with" />
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <Divider text="Or continue with" />    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <SocialAuthButton
         icon={<GoogleIcon />}
         text="Google"
         borderColor="white"
-        onClick={handleChange}
+        onClick={() => handleSocialSignIn('google')}
+        disabled={isLoading}
       />
       <SocialAuthButton
         icon={<FacebookIcon />}
         text="Facebook"
         borderColor="#1877F2"
-        onClick={handleChange}
+        onClick={() => handleSocialSignIn('facebook')}
+        disabled={isLoading}
       />
       
       <SocialAuthButton
         icon={<AppleIcon />}
         text="Apple"
         borderColor="white"
-        onClick={handleChange}
+        onClick={() => handleSocialSignIn('apple')}
+        disabled={isLoading}
       />
       </div>
 </div>        <div className="flex items-center justify-center mt-5 space-x-2">

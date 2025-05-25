@@ -4,6 +4,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { createClient } from '../../../utils/supabase/client';
 import InputField from '../../components/InputField';
 import PasswordInput from '../../components/passwordInput';
 import Button from '../../components/Button';
@@ -20,6 +22,9 @@ import AppleIcon from '../../components/AppleIcon';
 
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const supabase = createClient();
+  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -39,6 +44,8 @@ export default function SignUpPage() {
     confirmPassword: '',
     agreeToTerms: ''
   });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -117,7 +124,6 @@ export default function SignUpPage() {
     setFormErrors(errors);
     return isValid;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -126,22 +132,78 @@ export default function SignUpPage() {
       return;
     }
 
-    // Here you would integrate with Supabase for authentication
+    setIsLoading(true);
+
     try {
-      // Placeholder for Supabase signup
-      console.log('Signing up user:', formData);
-      // Redirect to dashboard after successful signup
-      // router.push('/dashboard');
+      // Sign up the user with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            username: formData.username,
+          }
+        }
+      });
+
+      if (authError) {
+        if (authError.message.includes('User already registered')) {
+          setFormErrors(prev => ({
+            ...prev,
+            email: 'An account with this email already exists'
+          }));
+        } else {
+          setFormErrors(prev => ({
+            ...prev,
+            email: authError.message
+          }));
+        }
+        return;
+      }
+
+      if (authData.user) {
+        // Redirect to the 'Check Your Email' page
+        router.push('/auth/verify-email');
+        return;
+      }
     } catch (error) {
       console.error('Signup error:', error);
-      alert('Error creating account. Please try again.');
+      setFormErrors(prev => ({
+        ...prev,
+        email: 'An error occurred during signup. Please try again.'
+      }));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSocialSignUp = (provider) => {
-    // Placeholder for social signup logic
-    console.log(`Sign up with ${provider}`);
-  };  
+  const handleSocialSignUp = async (provider) => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+      
+      if (error) {
+        console.error(`Error with ${provider} signup:`, error);
+        setFormErrors(prev => ({
+          ...prev,
+          email: `Error signing up with ${provider}`
+        }));
+      }
+    } 
+    catch (error) {
+      console.error('Social signup error:', error);
+    } 
+    finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#09090B] text-white px-4 py-6">
       <div className="min-w-[50%] w-full max-w-sm">
@@ -260,36 +322,40 @@ export default function SignUpPage() {
                                   <p className="text-red-400 text-xs mt-1 ml-2">{formErrors.agreeToTerms}</p>
                                 )}
                               </div>
-              </div>
+              </div>              
               <Button 
                 type="submit" 
                 primary 
+                disabled={isLoading}
+                onClick={handleSubmit}
                 className="px-6 whitespace-nowrap"
               >
-                Create Account <span className="ml-2">→</span>
+                {isLoading ? 'Creating Account...' : 'Create Account'} <span className="ml-2">→</span>
               </Button>
             </div>
           </form>
-            <Divider text="SIGN UP WITH" />
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Divider text="SIGN UP WITH" />    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <SocialAuthButton
         icon={<GoogleIcon />}
         text="Google"
         borderColor="white"
-        onClick={handleChange}
+        onClick={() => handleSocialSignUp('google')}
+        disabled={isLoading}
       />
       <SocialAuthButton
         icon={<FacebookIcon />}
         text="Facebook"
         borderColor="#1877F2"
-        onClick={handleChange}
+        onClick={() => handleSocialSignUp('facebook')}
+        disabled={isLoading}
       />
       
       <SocialAuthButton
         icon={<AppleIcon />}
         text="Apple"
         borderColor="white"
-        onClick={handleChange}
+        onClick={() => handleSocialSignUp('apple')}
+        disabled={isLoading}
       />
       </div>
         </div>

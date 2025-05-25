@@ -1,4 +1,6 @@
 "use client"; // cz we will use client components here (form)
+
+
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -7,12 +9,9 @@ import PasswordInput from '../../components/passwordInput';
 import Button from '../../components/Button';
 import Divider from '../../components/Divider';
 import SocialAuthButton from '../../components/AuthSocialButton';
-import GoogleIcon from '../../components/googleIcon';
+import GoogleIcon from '../../components/GoogleIcon';
 import FacebookIcon from '../../components/FacebookIcon';
 import AppleIcon from '../../components/AppleIcon';
-
-
-
 
 
 
@@ -31,24 +30,99 @@ export default function SignUpPage() {
     agreeToTerms: false
   });
 
+  const [formErrors, setFormErrors] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    agreeToTerms: ''
+  });
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // Clear errors when user is typing
+    if (formErrors[name]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    let errors = {};
+    let isValid = true;
+    
+    // First name validation
+    if (!formData.firstName.trim()) {
+      errors.firstName = 'First name is required';
+      isValid = false;
+    }
+    
+    // Last name validation
+    if (!formData.lastName.trim()) {
+      errors.lastName = 'Last name is required';
+      isValid = false;
+    }
+    
+    // Username validation (alphanumeric, 3-20 chars)
+    if (!formData.username.trim()) {
+      errors.username = 'Username is required';
+      isValid = false;
+    } else if (!/^[a-zA-Z0-9_]{3,20}$/.test(formData.username)) {
+      errors.username = 'Username must be 3-20 characters (letters, numbers, underscores)';
+      isValid = false;
+    }
+    
+    // Email validation
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+      isValid = false;
+    }
+    
+    // Password validation (8+ chars, mix of numbers, letters, special chars)
+    if (!formData.password) {
+      errors.password = 'Password is required';
+      isValid = false;
+    } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/.test(formData.password)) {
+      errors.password = 'Password must be at least 8 characters with letters and numbers';
+      isValid = false;
+    }
+    
+    // Password confirmation
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = 'Please confirm your password';
+      isValid = false;
+    } else if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+      isValid = false;
+    }
+    
+    // Terms agreement
+    if (!formData.agreeToTerms) {
+      errors.agreeToTerms = 'You must agree to the terms and conditions';
+      isValid = false;
+    }
+    
+    setFormErrors(errors);
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Basic validation
-    if (!formData.agreeToTerms) {
-      alert('You must agree to the terms and conditions');
-      return;
-    }
     
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+    // Validate the form
+    if (!validateForm()) {
       return;
     }
 
@@ -82,9 +156,7 @@ export default function SignUpPage() {
         </div>
         
         <div className="bg-[#1E1E1E] rounded-2xl py-15 px-40 w-full">
-          <h1 className="text-2xl font-semibold text-center mb-6">Create Your Account</h1>
-
-          <form onSubmit={handleSubmit} className="space-y-4 mb-10" >
+          <h1 className="text-2xl font-semibold text-center mb-6">Create Your Account</h1>          <form onSubmit={handleSubmit} className="space-y-4 mb-10" >
             <div className="flex gap-4">
               <InputField
                 id="firstName"
@@ -92,6 +164,8 @@ export default function SignUpPage() {
                 value={formData.firstName}
                 onChange={handleChange}
                 required
+                name="firstName"
+                error={formErrors.firstName}
               />
               <InputField 
                 id="lastName" 
@@ -99,6 +173,8 @@ export default function SignUpPage() {
                 value={formData.lastName} 
                 onChange={handleChange} 
                 required
+                name="lastName"
+                error={formErrors.lastName}
               />
             </div>
             <InputField 
@@ -107,6 +183,8 @@ export default function SignUpPage() {
               value={formData.username} 
               onChange={handleChange} 
               required
+              name="username"
+              error={formErrors.username}
             />
             <InputField 
               id="email" 
@@ -115,6 +193,8 @@ export default function SignUpPage() {
               value={formData.email} 
               onChange={handleChange} 
               required
+              name="email"
+              error={formErrors.email}
             />
             
             <PasswordInput 
@@ -123,6 +203,8 @@ export default function SignUpPage() {
               value={formData.password} 
               onChange={handleChange} 
               required
+              name="password"
+              error={formErrors.password}
             />
             
             <PasswordInput 
@@ -131,7 +213,9 @@ export default function SignUpPage() {
               value={formData.confirmPassword} 
               onChange={handleChange} 
               required
-            />  
+              name="confirmPassword"
+              error={formErrors.confirmPassword}
+            />
             <div className="flex items-start sm:items-center justify-between mb-4 gap-4">
               <div className="flex items-center">
                 <input 
@@ -168,10 +252,14 @@ export default function SignUpPage() {
                           />
                         </svg>
                       )}
-                    </label>
-                              <label htmlFor="agreeToTerms" className="text-sm text-gray-400 ml-2">
-                  I Agree with all of your <Link href="/terms" className="text-[#5529C9] hover:underline">Terms & Conditions</Link>
-                </label>
+                    </label>                              <div>
+                                <label htmlFor="agreeToTerms" className="text-sm text-gray-400 ml-2">
+                                  I Agree with all of your <Link href="/auth/terms" className="text-[#5529C9] hover:underline">Terms & Conditions</Link>
+                                </label>
+                                {formErrors.agreeToTerms && (
+                                  <p className="text-red-400 text-xs mt-1 ml-2">{formErrors.agreeToTerms}</p>
+                                )}
+                              </div>
               </div>
               <Button 
                 type="submit" 
@@ -183,7 +271,7 @@ export default function SignUpPage() {
             </div>
           </form>
             <Divider text="SIGN UP WITH" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <SocialAuthButton
         icon={<GoogleIcon />}
         text="Google"
@@ -203,13 +291,12 @@ export default function SignUpPage() {
         borderColor="white"
         onClick={handleChange}
       />
-          </div>
+      </div>
         </div>
-        
-        <div className="flex items-center justify-center mt-5 space-x-2">
+          <div className="flex items-center justify-center mt-5 space-x-2">
           <p className="text-gray-400 text-sm">Already have an account?</p>
           <Link 
-            href="/auth/login" 
+            href="/auth/signin" 
             className="inline-block bg-[#26223A] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors text-sm hover:underline hover:bg-[#5222D0]"
           >
             Sign In

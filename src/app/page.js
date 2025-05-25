@@ -1,5 +1,6 @@
 import Image from "next/image"
 import HeaderButtons from './components/LandingPageNavBar';
+import PageFooter from './components/landingPageFooter';
 
 export default function indexPage() {
     return (
@@ -32,6 +33,7 @@ export default function indexPage() {
             <div className="lowerSection">
 
             </div>
+            <PageFooter></PageFooter>
         </div>
     )
 }

@@ -24,7 +24,7 @@ export default function TermsAndConditionsPage() {
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-semibold">Terms & Conditions</h1>
             <Link 
-              href="/auth/signup" 
+              href="/signup" 
               className="text-[#5529C9] text-sm hover:underline"
             >
               Back to Sign Up
@@ -105,7 +105,7 @@ export default function TermsAndConditionsPage() {
           <div className="mt-10 border-t border-gray-700 pt-6">
             <div className="text-center">
               <Link 
-                href="/auth/signup" 
+                href="/signup" 
                 className="inline-block bg-[#5222D0] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors"
               >
                 I Agree & Continue

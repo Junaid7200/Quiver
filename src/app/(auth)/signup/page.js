@@ -11,7 +11,7 @@ import PasswordInput from '../../components/passwordInput';
 import Button from '../../components/Button';
 import Divider from '../../components/Divider';
 import SocialAuthButton from '../../components/AuthSocialButton';
-import GoogleIcon from '../../components/GoogleIcon';
+import GoogleIcon from '../../components/googleIcon';
 import GitHubIcon from '../../components/GitHubIcon';
 import AppleIcon from '../../components/AppleIcon';
 
@@ -183,7 +183,7 @@ export default function SignUpPage() {
         }
         
         // User successfully created, redirect to verification page
-        router.push('/auth/verify-email');
+        router.push('/verify-email');
         return;
       }
     } catch (error) {
@@ -203,7 +203,7 @@ export default function SignUpPage() {
       
       // Configure options based on provider
       const options = {
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo: `${window.location.origin}/callback`
       };
       
       // Specific options for GitHub
@@ -347,7 +347,7 @@ export default function SignUpPage() {
                       )}
                     </label>                              <div>
                                 <label htmlFor="agreeToTerms" className="text-sm text-gray-400 ml-2">
-                                  I Agree with all of your <Link href="/auth/terms" className="text-[#5529C9] hover:underline">Terms & Conditions</Link>
+                                  I Agree with all of your <Link href="/terms" className="text-[#5529C9] hover:underline">Terms & Conditions</Link>
                                 </label>
                                 {formErrors.agreeToTerms && (
                                   <p className="text-red-400 text-xs mt-1 ml-2">{formErrors.agreeToTerms}</p>
@@ -393,7 +393,7 @@ export default function SignUpPage() {
           <div className="flex items-center justify-center mt-5 space-x-2">
           <p className="text-gray-400 text-sm">Already have an account?</p>
           <Link 
-            href="/auth/signin" 
+            href="/signin" 
             className="inline-block bg-[#26223A] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors text-sm hover:underline hover:bg-[#5222D0]"
           >
             Sign In

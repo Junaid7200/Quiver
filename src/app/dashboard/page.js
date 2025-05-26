@@ -25,7 +25,7 @@ export default function DashboardPage() {
             const { data: { user }, error } = await supabase.auth.getUser();
             
             if (error || !user) {
-                router.push('/auth/signin');
+                router.push('/signin');
                 return;
             }
 
@@ -71,7 +71,7 @@ export default function DashboardPage() {
             if (error) {
                 console.error('Error signing out:', error);
             } else {
-                router.push('/auth/signin');
+                router.push('/signin');
             }
         } catch (error) {
             console.error('Error during sign out:', error);

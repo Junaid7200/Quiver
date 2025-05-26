@@ -18,7 +18,7 @@ export default function AuthCallback() {
         
         if (errorCode || errorDescription) {
           console.error('OAuth Error:', errorCode, errorDescription);
-          router.push(`/auth/signin?error=${encodeURIComponent(errorDescription || 'Authentication failed')}`);
+          router.push(`/signin?error=${encodeURIComponent(errorDescription || 'Authentication failed')}`);
           return;
         }
         
@@ -33,7 +33,7 @@ export default function AuthCallback() {
         
         if (error) {
           console.error('Error during auth callback:', error);
-          router.push('/auth/signin?error=Authentication failed');
+          router.push('/signin?error=Authentication failed');
           return;
         }
           if (data?.session) {
@@ -44,7 +44,7 @@ export default function AuthCallback() {
           // For GitHub users, redirect to GitHub setup page
           if (provider === 'github') {
             console.log('GitHub user detected, redirecting to GitHub setup');
-            router.push('/auth/github-setup');
+            router.push('/github-setup');
           } else {
             // For other providers, redirect to dashboard directly
             router.push('/dashboard');
@@ -52,11 +52,11 @@ export default function AuthCallback() {
         } else {
           // No session, redirect back to sign in
           console.log('No session found, redirecting to sign in');
-          router.push('/auth/signin');
+          router.push('/signin');
         }
       } catch (error) {
         console.error('Unexpected error:', error);
-        router.push('/auth/signin?error=Something went wrong');
+        router.push('/signin?error=Something went wrong');
       }
     };
 

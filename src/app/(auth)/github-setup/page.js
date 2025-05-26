@@ -26,7 +26,7 @@ export default function GithubProfileSetupPage() {
         }
         
         if (!user) {
-          router.push('/auth/signin');
+          router.push('/signin');
           return;
         }
         
@@ -133,9 +133,6 @@ export default function GithubProfileSetupPage() {
           </div>
         </div>
         
-        <div className="text-center mt-6 text-sm text-gray-400">
-          <p>Having trouble? <Link href="/auth-debug" className="text-[#5222D0] hover:underline">Visit the help center</Link></p>
-        </div>
       </div>
     </main>
   );

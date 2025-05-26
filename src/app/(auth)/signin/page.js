@@ -11,7 +11,7 @@ import InputField from '../../components/InputField';
 import PasswordInput from '../../components/passwordInput';
 import Button from '../../components/Button';
 import SocialAuthButton from '../../components/AuthSocialButton';
-import GoogleIcon from '../../components/GoogleIcon';
+import GoogleIcon from '../../components/googleIcon';
 import GitHubIcon from '../../components/GitHubIcon';
 import AppleIcon from '../../components/AppleIcon'; 
 import Divider from '../../components/Divider';
@@ -153,7 +153,7 @@ const handleChange = (e) => {
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: provider,
                 options: {
-                    redirectTo: `${window.location.origin}/auth/callback`
+                    redirectTo: `${window.location.origin}/callback`
                 }
             });
             
@@ -202,7 +202,7 @@ const handleChange = (e) => {
                             onChange={handleChange}
                             error={formErrors.password}
                         />
-                        </div>                        <Link href="/auth/forgot-password" className="text-sm text-[#5529C9] hover:underline">
+                        </div>                        <Link href="/forgot-password" className="text-sm text-[#5529C9] hover:underline">
                                 Forgot password?
                             </Link>
                         <div className="flex items-center justify-between">
@@ -282,7 +282,7 @@ const handleChange = (e) => {
 </div>        <div className="flex items-center justify-center mt-5 space-x-2">
           <p className="text-gray-400 text-sm">Don't have an account?</p>
           <Link 
-            href="/auth/signup" 
+            href="/signup" 
             className="inline-block bg-[#26223A] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors text-sm hover:underline hover:bg-[#5222D0]"
           >
             Sign Up

@@ -76,7 +76,7 @@ export default function ResetPasswordPage() {
                 setIsSuccess(true);
                 // Redirect to signin after 3 seconds
                 setTimeout(() => {
-                    router.push('/auth/signin');
+                    router.push('/signin');
                 }, 3000);
             }
         } catch (error) {
@@ -156,7 +156,7 @@ export default function ResetPasswordPage() {
                     )}
                     
                     <div className="text-center">
-                        <Link href="/auth/signin" className="text-[#5529C9] text-sm hover:underline">
+                        <Link href="/signin" className="text-[#5529C9] text-sm hover:underline">
                             Back to Sign In
                         </Link>
                     </div>

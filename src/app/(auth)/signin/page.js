@@ -11,7 +11,7 @@ import InputField from '../../components/InputField';
 import PasswordInput from '../../components/passwordInput';
 import Button from '../../components/Button';
 import SocialAuthButton from '../../components/AuthSocialButton';
-import GoogleIcon from '../../components/GoogleIcon';
+import GoogleIcon from '../../components/googleIcon';
 import GitHubIcon from '../../components/GitHubIcon';
 import AppleIcon from '../../components/AppleIcon'; 
 import Divider from '../../components/Divider';

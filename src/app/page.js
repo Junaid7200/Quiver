@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image"
 import HeaderButtons from './components/LandingPageNavBar';
 import PageFooter from './components/landingPageFooter';

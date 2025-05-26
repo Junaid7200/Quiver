@@ -87,7 +87,7 @@ const handleChange = (e) => {
             <div className='min-w-[50%] w-full max-w-sm'>
                 <div className='flex justify-center mb-6'>
                     <Image
-                        src ="/Assets/quiver-logo.png"
+                        src ="/Assets/quiver-logo.svg"
                         alt="Quiver Logo"
                         width={80}
                         height={80}

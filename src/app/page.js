@@ -1,9 +1,11 @@
-'use client'
+"use client";
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from "next/image"
+import { createClient } from '../utils/supabase/client';
 import HeaderButtons from './components/LandingPageNavBar';
 import PageFooter from './components/landingPageFooter';
-import { useRouter } from "next/navigation";
 
 export default function indexPage() {
     const router = useRouter()
@@ -13,6 +15,25 @@ export default function indexPage() {
     function watchDemo(){
         router.push('');
     }
+    const supabase = createClient();    // create connection with supabase
+
+// the [] means the useEffect will run only once when the component mounts
+    useEffect(() => {
+        checkAuthStatus();
+    }, []);
+
+// Function to check if the user is already logged in
+    const checkAuthStatus = async () => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();   // getUser is a promise thats why we have await behind it
+            if (user) {
+                router.push('/dashboard');
+            }
+        } 
+        catch (error) {
+            console.error('Error checking auth status:', error);
+        }
+    };
     return (
         <div className="w-full flex flex-col bg-black h-[100%]">
             <header className="bg-[#09090B] w-[100%] h-[70px] flex justify-between items-center px-[40px] border-b border-solid border-[#E3DEED]">

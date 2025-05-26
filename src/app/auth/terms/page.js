@@ -11,7 +11,7 @@ export default function TermsAndConditionsPage() {
         <div className="flex justify-center mb-6">
           <Link href="/">
             <Image
-              src="/Assets/quiver-logo.png"
+              src="/Assets/quiver-logo.svg"
               alt="Quiver Logo"
               width={80}
               height={80}

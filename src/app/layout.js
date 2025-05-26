@@ -21,6 +21,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning={true} // that stupid hydration error, it will go away with this
       >
         {children}
       </body>

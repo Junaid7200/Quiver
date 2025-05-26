@@ -12,7 +12,7 @@ import Button from '../../components/Button';
 import Divider from '../../components/Divider';
 import SocialAuthButton from '../../components/AuthSocialButton';
 import GoogleIcon from '../../components/GoogleIcon';
-import FacebookIcon from '../../components/FacebookIcon';
+import GitHubIcon from '../../components/GitHubIcon';
 import AppleIcon from '../../components/AppleIcon';
 
 
@@ -134,8 +134,7 @@ export default function SignUpPage() {
 
     setIsLoading(true);
 
-    try {
-      // Sign up the user with Supabase Auth
+    try {      // Sign up the user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -147,9 +146,15 @@ export default function SignUpPage() {
           }
         }
       });
-
-      if (authError) {
-        if (authError.message.includes('User already registered')) {
+        if (authError) {
+        console.log('Auth error detected:', authError);
+        
+        // Check for various ways Supabase might indicate a duplicate email
+        if (authError.message.includes('User already registered') || 
+            authError.message.includes('already in use') ||
+            authError.message.includes('already exists') ||
+            authError.message.toLowerCase().includes('duplicate')) {
+          console.log('Duplicate email detected');
           setFormErrors(prev => ({
             ...prev,
             email: 'An account with this email already exists'
@@ -160,11 +165,24 @@ export default function SignUpPage() {
             email: authError.message
           }));
         }
+        setIsLoading(false);
         return;
-      }
-
+      }      // Check if user was actually created (might indicate existing user or other issues)
       if (authData.user) {
-        // Redirect to the 'Check Your Email' page
+        console.log('User data:', authData.user);
+        
+        // Check if identities array is empty (indicates user already exists but auth error wasn't triggered)
+        if (authData.user.identities && authData.user.identities.length === 0) {
+          console.log('Empty identities array - likely existing user');
+          setFormErrors(prev => ({
+            ...prev,
+            email: 'An account with this email already exists'
+          }));
+          setIsLoading(false);
+          return;
+        }
+        
+        // User successfully created, redirect to verification page
         router.push('/auth/verify-email');
         return;
       }
@@ -178,15 +196,25 @@ export default function SignUpPage() {
       setIsLoading(false);
     }
   };
-
   const handleSocialSignUp = async (provider) => {
     try {
       setIsLoading(true);
+      console.log(`Initiating ${provider} sign up`);
+      
+      // Configure options based on provider
+      const options = {
+        redirectTo: `${window.location.origin}/auth/callback`
+      };
+      
+      // Specific options for GitHub
+      if (provider === 'github') {
+        // Request needed scopes for user info and email
+        options.scopes = 'read:user user:email';
+      }
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
+        options: options
       });
       
       if (error) {
@@ -195,6 +223,8 @@ export default function SignUpPage() {
           ...prev,
           email: `Error signing up with ${provider}`
         }));
+      } else {
+        console.log(`${provider} sign-up initiated successfully`);
       }
     } 
     catch (error) {
@@ -218,7 +248,8 @@ export default function SignUpPage() {
         </div>
         
         <div className="bg-[#1E1E1E] rounded-2xl py-15 px-40 w-full">
-          <h1 className="text-2xl font-semibold text-center mb-6">Create Your Account</h1>          <form onSubmit={handleSubmit} className="space-y-4 mb-10" >
+          <h1 className="text-2xl font-semibold text-center mb-6">Create Your Account</h1>          
+          <form onSubmit={handleSubmit} className="space-y-4 mb-10" >
             <div className="flex gap-4">
               <InputField
                 id="firstName"
@@ -341,12 +372,12 @@ export default function SignUpPage() {
         borderColor="white"
         onClick={() => handleSocialSignUp('google')}
         disabled={isLoading}
-      />
-      <SocialAuthButton
-        icon={<FacebookIcon />}
-        text="Facebook"
-        borderColor="#1877F2"
-        onClick={() => handleSocialSignUp('facebook')}
+      />      
+     
+       <SocialAuthButton
+        icon={<GitHubIcon />}
+        text="GitHub"
+        onClick={() => handleSocialSignUp('github')}
         disabled={isLoading}
       />
       

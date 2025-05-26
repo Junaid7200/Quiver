@@ -12,7 +12,7 @@ import PasswordInput from '../../components/passwordInput';
 import Button from '../../components/Button';
 import SocialAuthButton from '../../components/AuthSocialButton';
 import GoogleIcon from '../../components/GoogleIcon';
-import FacebookIcon from '../../components/FacebookIcon';
+import GitHubIcon from '../../components/GitHubIcon';
 import AppleIcon from '../../components/AppleIcon'; 
 import Divider from '../../components/Divider';
 
@@ -262,12 +262,12 @@ const handleChange = (e) => {
         borderColor="white"
         onClick={() => handleSocialSignIn('google')}
         disabled={isLoading}
-      />
+      />      
       <SocialAuthButton
-        icon={<FacebookIcon />}
-        text="Facebook"
-        borderColor="#1877F2"
-        onClick={() => handleSocialSignIn('facebook')}
+        icon={<GitHubIcon />}
+        text="GitHub"
+        
+        onClick={() => handleSocialSignIn('github')}
         disabled={isLoading}
       />
       

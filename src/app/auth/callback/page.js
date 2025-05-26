@@ -8,9 +8,27 @@ export default function AuthCallback() {
   const router = useRouter();
   const supabase = createClient();  // create connection with supabase
 
-  useEffect(() => {
+    useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        // Check URL for error parameters
+        const url = new URL(window.location.href);
+        const errorCode = url.searchParams.get('error');
+        const errorDescription = url.searchParams.get('error_description');
+        
+        if (errorCode || errorDescription) {
+          console.error('OAuth Error:', errorCode, errorDescription);
+          router.push(`/auth/signin?error=${encodeURIComponent(errorDescription || 'Authentication failed')}`);
+          return;
+        }
+        
+        // Get code parameter for GitHub
+        const code = url.searchParams.get('code');
+        if (code) {
+          console.log('OAuth code detected, processing authentication');
+        }
+        
+        // Check if user is authenticated
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -18,12 +36,22 @@ export default function AuthCallback() {
           router.push('/auth/signin?error=Authentication failed');
           return;
         }
-        
-        if (data?.session) {
-          // User is signed in, redirect to dashboard
-          router.push('/dashboard');
+          if (data?.session) {
+          // Get provider info
+          const provider = data.session.user?.app_metadata?.provider;
+          console.log('Successfully authenticated with:', provider);
+          
+          // For GitHub users, redirect to GitHub setup page
+          if (provider === 'github') {
+            console.log('GitHub user detected, redirecting to GitHub setup');
+            router.push('/auth/github-setup');
+          } else {
+            // For other providers, redirect to dashboard directly
+            router.push('/dashboard');
+          }
         } else {
           // No session, redirect back to sign in
+          console.log('No session found, redirecting to sign in');
           router.push('/auth/signin');
         }
       } catch (error) {

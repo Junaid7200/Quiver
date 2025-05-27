@@ -41,15 +41,10 @@ export default function AuthCallback() {
           const provider = data.session.user?.app_metadata?.provider;
           console.log('Successfully authenticated with:', provider);
           
-          // For GitHub users, redirect to GitHub setup page
-          if (provider === 'github') {
-            console.log('GitHub user detected, redirecting to GitHub setup');
-            router.push('/github-setup');
-          } else {
-            // For other providers, redirect to dashboard directly
+            console.log('Authentication successful with:', provider);
             router.push('/dashboard');
-          }
-        } else {
+        } 
+        else {
           // No session, redirect back to sign in
           console.log('No session found, redirecting to sign in');
           router.push('/signin');

@@ -1,7 +1,7 @@
 "use client"; // cz we will use client components here (form)
 
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -24,6 +24,28 @@ import AppleIcon from '../../components/AppleIcon';
 export default function SignUpPage() {
   const router = useRouter();
   const supabase = createClient();
+  // Add CSS keyframes for animations
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const style = document.createElement('style');
+      style.id = 'animation-styles';
+      style.innerHTML = `
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      return () => {
+        const existingStyle = document.getElementById('animation-styles');
+        if (existingStyle) {
+          existingStyle.remove();
+        }
+      };
+    }
+  }, []);
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -43,9 +65,7 @@ export default function SignUpPage() {
     password: '',
     confirmPassword: '',
     agreeToTerms: ''
-  });
-
-  const [isLoading, setIsLoading] = useState(false);
+  });  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -63,6 +83,40 @@ export default function SignUpPage() {
     }
   };
 
+
+
+const FormProgressIndicator = ({ formData }) => {
+  // Calculate completion percentage
+  const requiredFields = ['firstName', 'lastName', 'username', 'email', 'password', 'confirmPassword'];
+  const filledFields = requiredFields.filter(field => formData[field].trim() !== '').length;
+  const progress = Math.floor((filledFields / requiredFields.length) * 100);
+  
+  // Calculate color based on progress
+  let progressColor = '#475569'; // Default gray
+  
+  if (progress > 30) progressColor = '#6366f1'; // Indigo
+  if (progress > 60) progressColor = '#8b5cf6'; // Purple
+  if (progress > 80) progressColor = '#5222D0'; // Brand purple
+  if (progress === 100 && formData.agreeToTerms) progressColor = '#10b981'; // Green for complete
+  
+  return (
+    <div className="w-full mb-6">
+      <div className="flex justify-between text-xs text-gray-400 mb-1">
+        <span>Progress</span>
+        <span className="font-semibold">{progress}%{formData.agreeToTerms ? ' ✓' : ''}</span>
+      </div>
+      <div className="h-1 w-full bg-gray-700 rounded-full overflow-hidden">
+        <div 
+          className="h-full transition-all duration-300 ease-out"
+          style={{ 
+            width: `${progress}%`, 
+            backgroundColor: progressColor 
+          }}
+        />
+      </div>
+    </div>
+  );
+};
   const validateForm = () => {
     let errors = {};
     let isValid = true;
@@ -124,133 +178,138 @@ export default function SignUpPage() {
     setFormErrors(errors);
     return isValid;
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  // Stop if form is invalid
+  if (!validateForm()) {
+    return;
+  }
+
+  // Show loading spinner
+  setIsLoading(true);
+
+  try {
+    // Try to create user
+    const result = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          username: formData.username,
+        }
+      }
+    });
     
-    // Validate the form
-    if (!validateForm()) {
+    // Check for any errors
+    if (result.error) {
+      console.log("Error during signup:", result.error);
+      
+      // Show error message to user
+      setFormErrors(prevErrors => {
+        prevErrors.email = result.error.message || "Error creating account";
+        return prevErrors;
+      });
       return;
     }
-
-    setIsLoading(true);
-
-    try {      // Sign up the user with Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            username: formData.username,
-          }
-        }
-      });
-        if (authError) {
-        console.log('Auth error detected:', authError);
-        
-        // Check for various ways Supabase might indicate a duplicate email
-        if (authError.message.includes('User already registered') || 
-            authError.message.includes('already in use') ||
-            authError.message.includes('already exists') ||
-            authError.message.toLowerCase().includes('duplicate')) {
-          console.log('Duplicate email detected');
-          setFormErrors(prev => ({
-            ...prev,
-            email: 'An account with this email already exists'
-          }));
-        } else {
-          setFormErrors(prev => ({
-            ...prev,
-            email: authError.message
-          }));
-        }
-        setIsLoading(false);
-        return;
-      }      // Check if user was actually created (might indicate existing user or other issues)
-      if (authData.user) {
-        console.log('User data:', authData.user);
-        
-        // Check if identities array is empty (indicates user already exists but auth error wasn't triggered)
-        if (authData.user.identities && authData.user.identities.length === 0) {
-          console.log('Empty identities array - likely existing user');
-          setFormErrors(prev => ({
-            ...prev,
-            email: 'An account with this email already exists'
-          }));
-          setIsLoading(false);
-          return;
-        }
-        
-        // User successfully created, redirect to verification page
-        router.push('/verify-email');
+    
+    // Check if user was created
+    if (result.data && result.data.user) {
+      // Check for empty identities array (means duplicate email)
+      if (!result.data.user.identities || result.data.user.identities.length === 0) {
+        setFormErrors(prevErrors => {
+          prevErrors.email = "An account with this email already exists";
+          return prevErrors;
+        });
         return;
       }
-    } catch (error) {
-      console.error('Signup error:', error);
-      setFormErrors(prev => ({
-        ...prev,
-        email: 'An error occurred during signup. Please try again.'
-      }));
-    } finally {
-      setIsLoading(false);
+      
+      // Success! Redirect to verification page
+      router.push('/verify-email');
     }
-  };
-  const handleSocialSignUp = async (provider) => {
-    try {
-      setIsLoading(true);
-      console.log(`Initiating ${provider} sign up`);
+  } catch (error) {
+    // Handle unexpected errors
+    console.error("Signup failed:", error);
+    
+    setFormErrors(prevErrors => {
+      prevErrors.email = "Something went wrong. Please try again.";
+      return prevErrors;
+    });
+  } finally {
+    // Always hide loading spinner
+    setIsLoading(false);
+  }
+};
+// Simplified social sign-up function
+const handleSocialSignUp = async (provider) => {
+  // Show loading spinner
+  setIsLoading(true);
+  console.log("Starting " + provider + " sign up");
+  
+  try {
+    // Create basic options
+    let options = {};
+    options.redirectTo = window.location.origin + "/callback";
+    
+    // Add email permission for GitHub
+    // if (provider === "github") {
+    //   options.scopes = "read:user user:email";
+    // }
+    
+    // Start login process
+    let result = await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: options
+    });
+    
+    // Check if there was an error
+    if (result.error) {
+      console.error("Error with " + provider + " signup:", result.error);
       
-      // Configure options based on provider
-      const options = {
-        redirectTo: `${window.location.origin}/callback`
-      };
-      
-      // Specific options for GitHub
-      if (provider === 'github') {
-        // Request needed scopes for user info and email
-        options.scopes = 'read:user user:email';
-      }
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: options
+      // Just update the email error message
+      setFormErrors(prevErrors => {
+        prevErrors.email = "Error signing up with " + provider;
+        return prevErrors;
       });
-      
-      if (error) {
-        console.error(`Error with ${provider} signup:`, error);
-        setFormErrors(prev => ({
-          ...prev,
-          email: `Error signing up with ${provider}`
-        }));
-      } else {
-        console.log(`${provider} sign-up initiated successfully`);
-      }
     } 
-    catch (error) {
-      console.error('Social signup error:', error);
-    } 
-    finally {
-      setIsLoading(false);
+    else {
+      console.log(provider + " sign-up started successfully");
     }
-  };
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-[#09090B] text-white px-4 py-6">
-      <div className="min-w-[50%] w-full max-w-sm">
-        <div className="flex justify-center mb-6">
-          <Image 
+  } 
+  catch (error) {
+    console.error("Social signup error:", error);
+    
+    // Show generic error
+    setFormErrors(prevErrors => {
+      prevErrors.email = "Something went wrong. Please try again.";
+      return prevErrors;
+    });
+  } 
+  finally {
+    setIsLoading(false);  // Hide loading spinner
+  }
+};  return (
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#09090B] via-[#131218] to-[#1A1830] text-white px-4 py-6 relative">
+      <div className="min-w-[50%] w-full max-w-sm relative z-10">
+        <div className="flex justify-center mb-6">          
+        <Image 
             src="/Assets/quiver-logo.svg" 
             alt="Quiver Logo" 
             width={80} 
             height={80} 
-            className="object-contain"
+            className="object-contain hover:scale-105 transition-transform duration-300"
+            style={{animation: 'float 6s ease-in-out infinite'}}
           />
         </div>
         
-        <div className="bg-[#1E1E1E] rounded-2xl py-15 px-40 w-full">
-          <h1 className="text-2xl font-semibold text-center mb-6">Create Your Account</h1>          
-          <form onSubmit={handleSubmit} className="space-y-4 mb-10" >
-            <div className="flex gap-4">
+            <div className="bg-[#1E1E1E] rounded-2xl p-8 w-full border border-gray-800/50 shadow-lg">
+        <FormProgressIndicator formData={formData} />
+          <h1 className="text-2xl font-semibold text-center mb-2 bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent">Create Your Account</h1>
+          <p className="text-gray-400 text-sm text-center mb-6">Join Quiver and get started with your journey</p>          
+          <form onSubmit={handleSubmit} className="space-y-4 mb-10" >            
+          <div className="flex gap-4">
               <InputField
                 id="firstName"
                 placeholder="First name..."
@@ -269,7 +328,7 @@ export default function SignUpPage() {
                 name="lastName"
                 error={formErrors.lastName}
               />
-            </div>
+            </div>              
             <InputField 
               id="username" 
               placeholder="Username" 
@@ -288,8 +347,7 @@ export default function SignUpPage() {
               required
               name="email"
               error={formErrors.email}
-            />
-            
+            />              
             <PasswordInput 
               id="password" 
               placeholder="Create password" 
@@ -309,8 +367,7 @@ export default function SignUpPage() {
               name="confirmPassword"
               error={formErrors.confirmPassword}
             />
-            <div className="flex items-start sm:items-center justify-between mb-4 gap-4">
-              <div className="flex items-center">
+            <div className="flex items-start sm:items-center justify-between mb-4 gap-4">              <div className="flex items-center group">
                 <input 
                   type="checkbox" 
                   id="agreeToTerms" 
@@ -323,6 +380,7 @@ export default function SignUpPage() {
                       htmlFor="agreeToTerms" 
                       className={`
                       w-5 h-5 border-[1px] cursor-pointer flex items-center justify-center transition-all duration-200
+                      group-hover:border-[#5222D0]
                       ${formData.agreeToTerms 
                         ? 'bg-[#5222D0] border-[#5222D0]' 
                         : 'bg-transparent border-gray-500'
@@ -345,41 +403,129 @@ export default function SignUpPage() {
                           />
                         </svg>
                       )}
-                    </label>                              <div>
-                                <label htmlFor="agreeToTerms" className="text-sm text-gray-400 ml-2">
-                                  I Agree with all of your <Link href="/terms" className="text-[#5529C9] hover:underline">Terms & Conditions</Link>
-                                </label>
-                                {formErrors.agreeToTerms && (
-                                  <p className="text-red-400 text-xs mt-1 ml-2">{formErrors.agreeToTerms}</p>
+                    </label>                              
+                    <div>
+                                <label htmlFor="agreeToTerms" className="text-sm text-gray-400 ml-2 cursor-pointer group-hover:text-gray-300 transition-colors">
+                                  I Agree with all of your <Link href="/terms" className="text-[#5529C9] hover:underline hover:text-[#6637D9] transition-colors">Terms & Conditions</Link>
+                                </label>                                {formErrors.agreeToTerms && (
+                                  <p className="text-red-400 text-xs mt-1 ml-2 animate-pulse">{formErrors.agreeToTerms}</p>
                                 )}
                               </div>
-              </div>              
+              </div>                
               <Button 
                 type="submit" 
                 primary 
                 disabled={isLoading}
                 onClick={handleSubmit}
-                className="px-6 whitespace-nowrap"
+                className="px-6 whitespace-nowrap transition-all duration-300 relative overflow-hidden hover:shadow-[0_0_20px_rgba(82,34,208,0.5)] hover:scale-105 border border-transparent hover:border-purple-300/30"
+                style={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
               >
-                {isLoading ? 'Creating Account...' : 'Create Account'} <span className="ml-2">→</span>
+                <span className="relative z-10">
+                  {isLoading ? (
+                    <>
+                      <span className="inline-block animate-spin mr-2">⟳</span> Creating...
+                    </>
+                  ) : (
+                    <div>
+                      Create Account <span className="ml-2">→</span>
+                    </div>
+                  )}
+                </span>
+                <span 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                  style={{
+                    background: 'linear-gradient(135deg, transparent, transparent 30%, rgba(82,34,208,0.4))',
+                    top: '-50%',
+                    left: '-50%',
+                    width: '200%',
+                    height: '200%',
+                    transform: 'rotate(-45deg)',
+                    transition: 'all 0.3s ease',
+                    zIndex: 1,
+                    opacity: 0
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.animation = 'holographicSweep 1.5s infinite';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '0';
+                    e.currentTarget.style.animation = 'none';
+                  }}
+                ></span>
               </Button>
             </div>
-          </form>
-            <Divider text="SIGN UP WITH" />    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <SocialAuthButton
+          </form>            <Divider text="SIGN UP WITH" />    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">      <SocialAuthButton
         icon={<GoogleIcon />}
         text="Google"
         borderColor="white"
         onClick={() => handleSocialSignUp('google')}
         disabled={isLoading}
-      />      
+        className="hover:scale-105 hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] transition-all duration-300 relative overflow-hidden"
+        style={{
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        <span className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(135deg, transparent, transparent 30%, rgba(82,34,208,0.4))',
+            top: '-50%',
+            left: '-50%',
+            width: '200%',
+            height: '200%',
+            transform: 'rotate(-45deg)',
+            transition: 'all 0.3s ease',
+            opacity: 0,
+            zIndex: 0
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = '1';
+            e.currentTarget.style.animation = 'holographicSweep 1.5s infinite';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = '0';
+            e.currentTarget.style.animation = 'none';
+          }}
+        ></span>
+      </SocialAuthButton>      
      
        <SocialAuthButton
         icon={<GitHubIcon />}
         text="GitHub"
         onClick={() => handleSocialSignUp('github')}
         disabled={isLoading}
-      />
+        className="hover:scale-105 hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] transition-all duration-300 relative overflow-hidden"
+        style={{
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        <span className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(135deg, transparent, transparent 30%, rgba(82,34,208,0.4))',
+            top: '-50%',
+            left: '-50%',
+            width: '200%',
+            height: '200%',
+            transform: 'rotate(-45deg)',
+            transition: 'all 0.3s ease',
+            opacity: 0,
+            zIndex: 0
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = '1';
+            e.currentTarget.style.animation = 'holographicSweep 1.5s infinite';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = '0';
+            e.currentTarget.style.animation = 'none';
+          }}
+        ></span>
+      </SocialAuthButton>
       
       <SocialAuthButton
         icon={<AppleIcon />}
@@ -387,17 +533,73 @@ export default function SignUpPage() {
         borderColor="white"
         onClick={() => handleSocialSignUp('apple')}
         disabled={isLoading}
-      />
+        className="hover:scale-105 hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] transition-all duration-300 relative overflow-hidden"
+        style={{
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+<span 
+  className="absolute inset-0"
+  style={{
+    background: 'linear-gradient(135deg, transparent, transparent 30%, rgba(82,34,208,0.4), transparent 70%, transparent)',
+    top: '-50%',
+    left: '-50%',
+    width: '200%',
+    height: '200%',
+    transform: 'rotate(-45deg)',
+    transition: 'all 0.3s ease',
+    opacity: 0,
+    zIndex: 1
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.opacity = '1';
+    e.currentTarget.style.animation = 'holographicSweep 1.5s infinite';
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.opacity = '0';
+    e.currentTarget.style.animation = 'none';
+  }}
+></span>
+      </SocialAuthButton>
       </div>
-        </div>
-          <div className="flex items-center justify-center mt-5 space-x-2">
-          <p className="text-gray-400 text-sm">Already have an account?</p>
-          <Link 
-            href="/signin" 
-            className="inline-block bg-[#26223A] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors text-sm hover:underline hover:bg-[#5222D0]"
-          >
-            Sign In
-          </Link>
+        </div>          <div className="flex items-center justify-center mt-5 space-x-2">
+          <p className="text-gray-400 text-sm">Already have an account?</p>          
+<Link 
+  href="/signin" 
+  className="relative inline-block bg-[#26223A] text-white px-6 py-2 rounded-md transition-all duration-300 text-sm hover:scale-105 hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] hover:bg-[#5529C9] overflow-hidden border border-transparent hover:border-purple-300/30"
+  style={{
+    position: 'relative',
+    overflow: 'hidden',
+  }}
+>
+  <span className="relative z-10">Sign In</span>
+  <span 
+    className="absolute inset-0"
+    style={{
+      background: 'linear-gradient(135deg, transparent, transparent 30%, rgba(82,34,208,0.4), transparent 70%, transparent)',
+      top: '-50%',
+      left: '-50%',
+      width: '200%',
+      height: '200%',
+      transform: 'rotate(-45deg)',
+      transition: 'all 0.3s ease',
+      opacity: 0,
+      zIndex: 1
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.opacity = '1';
+      e.currentTarget.style.animation = 'holographicSweep 1.5s infinite';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.opacity = '0';
+      e.currentTarget.style.animation = 'none';
+    }}
+  ></span>
+</Link>
+
+
+
         </div>
       </div>
     </main>

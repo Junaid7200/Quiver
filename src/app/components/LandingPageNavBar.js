@@ -7,11 +7,11 @@ import Link from "next/link";
 export default function HeaderButtons() {
     const router = useRouter();
     function login(){
-        router.push('../auth/signin')
+        router.push('/signin')
     }
 
     function signup(){
-        router.push('../auth/signup')
+        router.push('/signup')
     }
     return (
         <div className="flex justify-between items-center h-[70px] w-[464px]">

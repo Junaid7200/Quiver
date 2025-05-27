@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -34,6 +34,28 @@ export default function SignInPage() {
     
     const [isLoading, setIsLoading] = useState(false);
 
+
+useEffect(() => {
+  if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.id = 'signin-animation-styles';
+    style.innerHTML = `
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      const existingStyle = document.getElementById('signin-animation-styles');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    };
+  }
+}, []);
 const handleChange = (e) => {
   const { name, value, type, checked } = e.target;
   setFormData(prev => ({
@@ -64,14 +86,16 @@ const handleChange = (e) => {
         if (!formData.password) {
             errors.password = 'Password is required';
             isValid = false;
-        } else if (formData.password.length < 8) {
+        } 
+        else if (formData.password.length < 8) {
             errors.password = 'Password must be at least 8 characters';
             isValid = false;
         }
         
         setFormErrors(errors);
         return isValid;
-    };    const handleSubmit = async (e) => {
+    };    
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
         // Validate form before submission
@@ -109,6 +133,9 @@ const handleChange = (e) => {
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: formData.password,
+                    options: {
+                    expiresIn: formData.rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 8 // 30 days vs 8 hours
+    }
             });
             
             if (error) {
@@ -136,13 +163,15 @@ const handleChange = (e) => {
                 console.log('User signed in successfully!');
                 router.push('/dashboard');
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Signin error:', error);
             setFormErrors(prev => ({
                 ...prev,
                 password: 'An error occurred during signin. Please try again.'
             }));
-        } finally {
+        } 
+        finally {
             setIsLoading(false);
         }
     };
@@ -164,15 +193,17 @@ const handleChange = (e) => {
                     identifier: `Error signing in with ${provider}`
                 }));
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Social signin error:', error);
-        } finally {
+        } 
+        finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <main className='bg-[#09090B] text-white min-h-screen flex px-4 py-6 items-center justify-center'>
+        <main className='text-white min-h-screen flex px-4 py-6 items-center justify-center bg-gradient-to-br from-[#09090B] via-[#131218] to-[#1A1830]'>
             <div className='min-w-[50%] w-full max-w-sm'>
                 <div className='flex justify-center mb-6'>
                     <Image
@@ -180,7 +211,8 @@ const handleChange = (e) => {
                         alt="Quiver Logo"
                         width={80}
                         height={80}
-                        className="object-contain"
+                            className="object-contain hover:scale-105 transition-transform duration-300"
+                            style={{animation: 'float 6s ease-in-out infinite'}}
                     />
                 </div>
                 <div className='bg-[#1E1E1E] rounded-2xl py-15 px-40 w-full'>
@@ -202,11 +234,13 @@ const handleChange = (e) => {
                             onChange={handleChange}
                             error={formErrors.password}
                         />
-                        </div>                        <Link href="/forgot-password" className="text-sm text-[#5529C9] hover:underline">
+                        </div>                        
+                        <Link href="/forgot-password" className="text-sm text-[#5529C9] hover:underline">
                                 Forgot password?
                             </Link>
                         <div className="flex items-center justify-between">
-              <div className="flex items-center">                <input 
+              <div className="flex items-center">                
+              <input 
                   type="checkbox" 
                   id="rememberMe" 
                   name="rememberMe"

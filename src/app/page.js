@@ -102,7 +102,7 @@ export default function indexPage() {
                 <div className="lower bg-[#5222D0] rounded-2xl w-[50%] h-[100%] absolute rotate-4 z-0 left-1/2 -translate-x-1/2"></div>
                 <div className="upper bg-[#27272A] border border-solid border-[#A78BF4] rounded-2xl px-[6%] py-[3%] w-[50%] h-[50%] relative z-10 mx-auto">
                     <p className='text-[#9B87F5] text-3xl mb-[3%] text-center'>Ready to Transform Your Study Routine?</p>
-                    <p className='text-[#A1A1AA] text-lg mb-[4%] text-center'>Join thousands of students who are studying smarter with Notus. Get started for free today.</p>
+                    <p className='text-[#A1A1AA] text-lg mb-[4%] text-center'>Join thousands of students who are studying smarter with Quiver. Get started for free today.</p>
                     <div className="flex justify-center items-center w-[100%] mb-[4%]">
                         <div className="Buttons flex w-[45%] justify-between">
                             <button className='bg-[#5222D0] text-white rounded-lg px-[3%] py-[4%] tracking-wider' onClick={getStartedFree}>Get Started Free</button>

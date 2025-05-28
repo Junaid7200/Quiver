@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/components/themeProvider.js", "src/app/components/navBar.js"  ],
+, "src/app/components/themeProvider.js", "src/app/components/navBar.js", "src/app/features/layout.jsx"  ],
   "exclude": [
     "node_modules"
   ]

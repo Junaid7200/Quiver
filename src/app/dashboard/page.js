@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from '../../utils/supabase/client.ts'
 import Link from "next/link";
 
-export default function bleh(){
+export default function bleh() {
     const [firstname, setFirstName] = useState(null);
     const [error, setError] = useState(null);
     const router = useRouter();
@@ -16,7 +16,7 @@ export default function bleh(){
                 const supabase = createClient();
 
                 //getting auth user
-                const {data: { user: authUser}, error: authError} = await supabase.auth.getUser();
+                const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
 
                 if (authError) throw authError;
                 if (!authUser) {
@@ -25,24 +25,33 @@ export default function bleh(){
                 }
 
                 //fetching username
-                const { data: userName, error: dbError} = await supabase
-                    .from ('users')
+                const { data: userName, error: dbError } = await supabase
+                    .from('users')
                     .select('first_name')
                     .eq('id', authUser.id)
-                    .simgle();
+                    .single();
 
                 if (dbError) throw dbError;
-                if (!userData) {
+                if (!userName) {
                     console.error("No user profile found for ID:", authUser.id);
                     return;
                 }
 
-                setFirstName(userName);
-            } catch{
-
-            };
+                setFirstName(userName.first_name);
+            } catch (error) {
+                console.error("Error fetching user:", error);
+                setError(error.message);
+            }
         };
-    })
+        fetchUserName();
+    }, [router])
+    const name = firstname || '';
 
+
+    return (
+        <main className="min-h-screen w-[100%] mt-[3%]">
+            <p className='text-4xl'>Welcome back, {name}!</p>
+            <p className="text-[#A1A1AA]">Track your learning progress and continue where you left off.</p>
+        </main>
+    )
 }
-    

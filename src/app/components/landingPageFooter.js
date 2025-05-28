@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-export default function () {
+export default function PageFooter() {
     return (
         <div>
             <div className='upperFooter flex justify-between w-full px-[3%] h-[25%] py-[2%] border-t border-b border-solid border-[#E3DEED]'>

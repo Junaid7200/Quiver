@@ -67,30 +67,30 @@ export default function indexPage() {
                         understand and remember more with less effort.</p>
                 </div>
                 <div className="outerCards w-full flex justify-center items-center">
-                    <div className="innerCards max-w-8xl h-[100%] flex flex-wrap justify-center mx-auto gap-6">
-                        <div className="border border-solid border-[#E3DEED] rounded-lg h-[40%] bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
+                    <div className="innerCards max-w-8xl h-[100%] flex flex-wrap justify-center mx-auto gap-4 items-stretch">
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
                             <Image src='/Assets/notesIcon.svg' alt='Notes Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Smart Notes</p>
                             <p className='text-[#A1A1AA] tracking-wider'>Take notes normally while AI organizes and
                                 enhances them automatically.</p>
                         </div>
-                        <div className="border border-solid border-[#E3DEED] rounded-lg h-[40%] bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
                             <Image src='/Assets/summariesIcon.svg' alt='Summaries Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">AI Summaries</p>
                             <p className='text-[#A1A1AA] tracking-wider'>Get concise summaries of your notes to review key concepts quickly.</p>
                         </div>
-                        <div className="border border-solid border-[#E3DEED] rounded-lg h-[40%] bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
                             <Image src='/Assets/flashcardsIcon.svg' alt='Flashcards Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Auto Flashcards</p>
                             <p className='text-[#A1A1AA] tracking-wider'>AI-generated flashcards from your notes to test your knowledge.</p>
                         </div>
-                        <div className="border border-solid border-[#E3DEED] rounded-lg h-[40%] bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
                             <Image src='/Assets/quizzesIcon.svg' alt='Quizzes Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Smart Quizzes</p>
                             <p className='text-[#A1A1AA] tracking-wider'>Custom quizzes based on your notes to reinforce
                                 your learning.</p>
                         </div>
-                        <div className="border border-solid border-[#E3DEED] rounded-lg h-[40%] bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
                             <Image src='/Assets/focusModeIcon.svg' alt='Focus Mode Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Focus Mode</p>
                             <p className='text-[#A1A1AA] tracking-wider'>Pomodoro timer with rewards to keep you focused during study sessions.</p>
@@ -104,7 +104,7 @@ export default function indexPage() {
                     <p className='text-[#9B87F5] text-3xl mb-[3%] text-center'>Ready to Transform Your Study Routine?</p>
                     <p className='text-[#A1A1AA] text-lg mb-[4%] text-center'>Join thousands of students who are studying smarter with Quiver. Get started for free today.</p>
                     <div className="flex justify-center items-center w-[100%] mb-[4%]">
-                        <div className="Buttons flex w-[45%] justify-between">
+                        <div className="Buttons flex w-[55%] justify-between">
                             <button className='bg-[#5222D0] text-white rounded-lg px-[3%] py-[4%] tracking-wider' onClick={getStartedFree}>Get Started Free</button>
                             <button className='bg-white text-black rounded-lg px-[3%] py-[4%] tracking-wider' onClick={watchDemo}>Watch Demo</button>
                         </div>

@@ -9,7 +9,7 @@ export default function () {
             <div className='upperFooter flex justify-between w-full px-[3%] h-[25%] py-[2%] border-t border-b border-solid border-[#E3DEED]'>
                 <div className="left w-[25%]  flex flex-col h-[100%]">
                     <div className="upper flex items-center h-[40px] w-[100%] mb-[2%]">
-                        <Image src='/Assets/quiver-logo.png' alt='QUiver' width={35} height={35} className="mr-[2%]"></Image>
+                        <Image src='/Assets/quiver-logo.svg' alt='QUiver' width={35} height={35} className="mr-[2%]"></Image>
                         <p className='text-2xl tracking-wide'>Quiver</p>
                     </div>
                     <div className="lower">

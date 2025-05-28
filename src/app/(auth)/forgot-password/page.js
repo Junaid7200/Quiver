@@ -32,12 +32,15 @@ export default function ForgotPasswordPage() {
 
             if (error) {
                 setError(error.message);
-            } else {
+            } 
+            else {
                 setIsSubmitted(true);
             }
-        } catch (error) {
+        } 
+        catch (error) {
             setError('An unexpected error occurred. Please try again.');
-        } finally {
+        } 
+        finally {
             setIsLoading(false);
         }
     };

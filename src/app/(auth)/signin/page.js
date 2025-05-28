@@ -216,7 +216,9 @@ const handleChange = (e) => {
                     />
                 </div>
                 <div className='bg-[#1E1E1E] rounded-2xl py-15 px-40 w-full'>
-                <h1 className="text-2xl font-semibold text-center mb-6">Sign In to Your Account</h1>                <form onSubmit={handleSubmit} className="space-y-4 mb-20">
+                <h1 className="text-2xl font-semibold text-center mb-6">Sign In to Your Account</h1>                
+                <p className="text-gray-400 text-sm text-center mb-6">Continue your journey</p>   
+                <form onSubmit={handleSubmit} className="space-y-4 mb-20">
                     <InputField
                             id="identifier"
                             name="identifier"
@@ -239,7 +241,7 @@ const handleChange = (e) => {
                                 Forgot password?
                             </Link>
                         <div className="flex items-center justify-between">
-              <div className="flex items-center">                
+              <div className="flex items-center group">                
               <input 
                   type="checkbox" 
                   id="rememberMe" 
@@ -251,7 +253,10 @@ const handleChange = (e) => {
                       <label 
                       htmlFor="rememberMe" 
                       className={`
-                      w-5 h-5 border-[1px] cursor-pointer flex items-center justify-center transition-all duration-200
+                      w-5 h-5 border-[1px] flex items-center justify-center duration-200
+                      group-hover:border-[#5222D0]
+                      text-sm text-gray-400 ml-2 cursor-pointer group-hover:text-gray-300 transition-colors
+                      
                       ${formData.rememberMe 
                         ? 'bg-[#5222D0] border-[#5222D0]' 
                         : 'bg-transparent border-gray-500'
@@ -274,7 +279,7 @@ const handleChange = (e) => {
                           />
                         </svg>                      )}
                     </label>
-                              <label htmlFor="rememberMe" className="text-sm text-gray-400 ml-2"> Remember me
+                    <label htmlFor="rememberMe" className="text-sm text-gray-400 ml-2 cursor-pointer group-hover:text-gray-300"> Remember me
                 </label>
               </div>                
               <Button 
@@ -282,7 +287,7 @@ const handleChange = (e) => {
                 primary 
                 disabled={isLoading}
                 onClick={handleSubmit}
-                className="px-6 whitespace-nowrap">
+                className="px-6 whitespace-nowrap hover:shadow-[0_0_20px_rgba(82,34,208,0.5)] hover:scale-105 border border-transparent hover:border-purple-300/30">
                 {isLoading ? 'Signing In...' : 'Sign In'} <span className="ml-2">→</span>
               </Button>
                 </div>
@@ -317,7 +322,7 @@ const handleChange = (e) => {
           <p className="text-gray-400 text-sm">Don't have an account?</p>
           <Link 
             href="/signup" 
-            className="inline-block bg-[#26223A] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors text-sm hover:underline hover:bg-[#5222D0]"
+            className="inline-block bg-[#26223A] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors text-sm hover:underline hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] hover:bg-[#5529C9] overflow-hidden hover:scale-105"
           >
             Sign Up
           </Link>

@@ -65,7 +65,8 @@ export default function SignUpPage() {
     password: '',
     confirmPassword: '',
     agreeToTerms: ''
-  });  const [isLoading, setIsLoading] = useState(false);
+  });  
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -178,6 +179,8 @@ const FormProgressIndicator = ({ formData }) => {
     setFormErrors(errors);
     return isValid;
   };
+
+
 const handleSubmit = async (e) => {
   e.preventDefault();
   
@@ -208,10 +211,10 @@ const handleSubmit = async (e) => {
       console.log("Error during signup:", result.error);
       
       // Show error message to user
-      setFormErrors(prevErrors => {
-        prevErrors.email = result.error.message || "Error creating account";
-        return prevErrors;
-      });
+      setFormErrors(prevErrors => ({
+        ...prevErrors,
+        email: result.error.message || "Error creating account"
+      }));
       return;
     }
     
@@ -219,24 +222,63 @@ const handleSubmit = async (e) => {
     if (result.data && result.data.user) {
       // Check for empty identities array (means duplicate email)
       if (!result.data.user.identities || result.data.user.identities.length === 0) {
-        setFormErrors(prevErrors => {
-          prevErrors.email = "An account with this email already exists";
-          return prevErrors;
-        });
+        setFormErrors(prevErrors => ({
+          ...prevErrors,
+          email: "An account with this email already exists"
+        }));
         return;
       }
       
-      // Success! Redirect to verification page
+      // Insert into custom users table
+      console.log("Attempting to insert user with ID:", result.data.user.id);
+      // Inside your handleSubmit function, in the try block:
+
+try {
+  const { data: insertData, error: insertError } = await supabase
+    .from('users')
+    .insert({
+      id: result.data.user.id,
+      username: formData.username,
+      email: formData.email,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      password_hash: 'managed_by_supabase_auth', // Add this line
+      preferences: { theme: 'dark', notifications: true }
+    })
+    .select();
+    
+  if (insertError) {
+    console.error("Error inserting into custom users table:", insertError);
+    console.log("Insert error details:", {
+      message: insertError.message,
+      details: insertError.details,
+      hint: insertError.hint,
+      code: insertError.code
+    });
+  } else {
+    console.log("Successfully inserted user into custom users table:", insertData);
+  }
+} catch (insertErr) {
+  console.error("Exception during custom user table insertion:", insertErr);
+}
+
+
+
+
+
+
+
+      // Success! Redirect to verification page regardless of custom table insert
       router.push('/verify-email');
     }
   } catch (error) {
     // Handle unexpected errors
     console.error("Signup failed:", error);
     
-    setFormErrors(prevErrors => {
-      prevErrors.email = "Something went wrong. Please try again.";
-      return prevErrors;
-    });
+    setFormErrors(prevErrors => ({
+      ...prevErrors,
+      email: "Something went wrong. Please try again."
+    }));
   } finally {
     // Always hide loading spinner
     setIsLoading(false);
@@ -304,8 +346,8 @@ const handleSocialSignUp = async (provider) => {
           />
         </div>
         
-            <div className="bg-[#1E1E1E] rounded-2xl p-8 w-full border border-gray-800/50 shadow-lg">
-        <FormProgressIndicator formData={formData} />
+            <div className="bg-[#1E1E1E] rounded-2xl p-[10%] w-full border border-gray-800/50 shadow-lg">
+          
           <h1 className="text-2xl font-semibold text-center mb-2 bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent">Create Your Account</h1>
           <p className="text-gray-400 text-sm text-center mb-6">Join Quiver and get started with your journey</p>          
           <form onSubmit={handleSubmit} className="space-y-4 mb-10" >            
@@ -407,7 +449,8 @@ const handleSocialSignUp = async (provider) => {
                     <div>
                                 <label htmlFor="agreeToTerms" className="text-sm text-gray-400 ml-2 cursor-pointer group-hover:text-gray-300 transition-colors">
                                   I Agree with all of your <Link href="/terms" className="text-[#5529C9] hover:underline hover:text-[#6637D9] transition-colors">Terms & Conditions</Link>
-                                </label>                                {formErrors.agreeToTerms && (
+                                </label>                                
+                                {formErrors.agreeToTerms && (
                                   <p className="text-red-400 text-xs mt-1 ml-2 animate-pulse">{formErrors.agreeToTerms}</p>
                                 )}
                               </div>
@@ -567,7 +610,7 @@ const handleSocialSignUp = async (provider) => {
           <p className="text-gray-400 text-sm">Already have an account?</p>          
 <Link 
   href="/signin" 
-  className="relative inline-block bg-[#26223A] text-white px-6 py-2 rounded-md transition-all duration-300 text-sm hover:scale-105 hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] hover:bg-[#5529C9] overflow-hidden border border-transparent hover:border-purple-300/30"
+  className="relative inline-block bg-[#26223A] text-white px-6 py-2 rounded-md transition-all duration-300 text-sm hover:scale-105 hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] hover:bg-[#5529C9] overflow-hidden hover:underline border border-transparent hover:border-purple-300/30"
   style={{
     position: 'relative',
     overflow: 'hidden',

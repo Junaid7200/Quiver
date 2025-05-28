@@ -35,13 +35,47 @@ export default function AuthCallback() {
           console.error('Error during auth callback:', error);
           router.push('/signin?error=Authentication failed');
           return;
-        }
-          if (data?.session) {
+        }        if (data?.session) {
           // Get provider info
           const provider = data.session.user?.app_metadata?.provider;
+          const user = data.session.user; // Define user here!
           console.log('Successfully authenticated with:', provider);
           
-            console.log('Authentication successful with:', provider);
+            // Check if user exists in custom users table
+const { data: existingUser, error: checkError } = await supabase
+  .from('users')
+  .select('id')
+  .eq('id', user.id)
+  .single();
+
+// If user doesn't exist (checkError means no record found)
+if (checkError && checkError.code === 'PGRST116') {
+  // Extract user info from social auth
+  const firstName = user.user_metadata?.first_name || 
+                    user.user_metadata?.full_name?.split(' ')[0] || 
+                    user.email?.split('@')[0] || 'User';
+  const lastName = user.user_metadata?.last_name || 
+                   user.user_metadata?.full_name?.split(' ').slice(1).join(' ') || '';
+  const username = user.email?.split('@')[0] + '_' + Date.now(); // Make it unique
+
+  // Insert into custom users table
+  const { error: insertError } = await supabase
+    .from('users')
+    .insert({
+      id: user.id,
+      username: username,
+      email: user.email,
+      first_name: firstName,
+      last_name: lastName,
+      password_hash: 'managed_by_supabase_auth',
+      preferences: { theme: 'dark', notifications: true }
+    });
+
+  if (insertError) {
+    console.error('Failed to create user profile:', insertError);
+  }
+}
+
             router.push('/dashboard');
         } 
         else {

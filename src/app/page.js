@@ -43,7 +43,7 @@ export default function indexPage() {
                 </div>
                 <HeaderButtons />
             </header>
-            <div className="UpperSection pl-[80px] pr-[80px] bg-black my-[10%] w-full flex items-center justify-between">
+            <div className="UpperSection pl-[80px] pr-[80px] bg-black my-[8%] w-full flex items-center justify-between">
                 <div className=" text mr-[70px] w-[60%]">
                     <div className="w-[100%] pt-[27px]">
                         <div><p className="text-white text-8xl font-bold">Aim.</p></div>
@@ -55,7 +55,7 @@ export default function indexPage() {
                     </div>
                 </div>
                 <div className="Image w-[40%]">
-                    <Image src="/Assets/landingPage.svg" width={650} height={446} alt='Girl painting on a big screen in front of her'></Image>
+                    <Image src="/Assets/landingPage/landingPage.svg" width={650} height={446} alt='Girl painting on a big screen in front of her'></Image>
                 </div>
             </div>
             <div className="midSection flex flex-col justify-between w-full px-[40px] h-[50%] mb-[10%]">
@@ -69,29 +69,29 @@ export default function indexPage() {
                 <div className="outerCards w-full flex justify-center items-center">
                     <div className="innerCards max-w-8xl h-[100%] flex flex-wrap justify-center mx-auto gap-4 items-stretch">
                         <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
-                            <Image src='/Assets/notesIcon.svg' alt='Notes Icon' width={50} height={50}></Image>
+                            <Image src='/Assets/landingPage/notesIcon.svg' alt='Notes Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Smart Notes</p>
                             <p className='text-[#A1A1AA] tracking-wider'>Take notes normally while AI organizes and
                                 enhances them automatically.</p>
                         </div>
                         <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
-                            <Image src='/Assets/summariesIcon.svg' alt='Summaries Icon' width={50} height={50}></Image>
+                            <Image src='/Assets/landingPage/summariesIcon.svg' alt='Summaries Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">AI Summaries</p>
                             <p className='text-[#A1A1AA] tracking-wider'>Get concise summaries of your notes to review key concepts quickly.</p>
                         </div>
                         <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
-                            <Image src='/Assets/flashcardsIcon.svg' alt='Flashcards Icon' width={50} height={50}></Image>
+                            <Image src='/Assets/landingPage/flashcardsIcon.svg' alt='Flashcards Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Auto Flashcards</p>
                             <p className='text-[#A1A1AA] tracking-wider'>AI-generated flashcards from your notes to test your knowledge.</p>
                         </div>
                         <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
-                            <Image src='/Assets/quizzesIcon.svg' alt='Quizzes Icon' width={50} height={50}></Image>
+                            <Image src='/Assets/landingPage/quizzesIcon.svg' alt='Quizzes Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Smart Quizzes</p>
                             <p className='text-[#A1A1AA] tracking-wider'>Custom quizzes based on your notes to reinforce
                                 your learning.</p>
                         </div>
                         <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] mr-[2%]">
-                            <Image src='/Assets/focusModeIcon.svg' alt='Focus Mode Icon' width={50} height={50}></Image>
+                            <Image src='/Assets/landingPage/focusModeIcon.svg' alt='Focus Mode Icon' width={50} height={50}></Image>
                             <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Focus Mode</p>
                             <p className='text-[#A1A1AA] tracking-wider'>Pomodoro timer with rewards to keep you focused during study sessions.</p>
                         </div>

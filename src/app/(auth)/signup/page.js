@@ -225,7 +225,7 @@ const handleSubmit = async (e) => {
         });
         return;
       }
-      
+
       // Success! Redirect to verification page
       router.push('/verify-email');
     }

@@ -58,10 +58,10 @@ export default function NavBar() {
     }
 
     return (
-        <div className="w-[10%] flex gap-5">
-            <button><Image src='/Assets/dayTheme.svg' width={30} height={30} alt='Day Theme Icon'></Image></button>
-            <button><Image src='/Assets/settingsIcon.svg' width={30} height={30} alt='Settings Icon'></Image></button>
-            <div className="w-[40px] h-[40px] rounded-full bg-[#32E0C4]"><p className="text-center">{userInitials}</p></div>
+        <div className="w-[15%] flex justify-end">
+            <button className='pr-[22px]'><Image src='/Assets/dayTheme.svg' width={30} height={30} alt='Day Theme Icon'></Image></button>
+            <button className='pr-[22px]'><Image src='/Assets/settingsIcon.svg' width={30} height={30} alt='Settings Icon'></Image></button>
+            <div className="w-[45px] h-[45px] rounded-full bg-[#32E0C4]"><p className="text-center">{userInitials}</p></div>
         </div>
     )
 }

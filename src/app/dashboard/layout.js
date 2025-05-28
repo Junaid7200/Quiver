@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import NavBar from "../components/NavBar"
+import Sidebar from '../components/sidebar'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,11 +25,16 @@ export default function DashboardPage({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning={true} // that stupid hydration error, it will go away with this
       >
-        <div className="flex justify-end">
-        <NavBar></NavBar>
+        
+        <div className="flex h-screen">
+          <Sidebar />
+          <div className="flex-1 flex flex-col">
+            <div className="flex justify-end pt-[1%] pr-[2%]">
+              <NavBar />
+            </div>
+            <main className="">{children}</main>
+          </div>
         </div>
-        <p>Hellooooooo</p>
-        {children}
       </body>
     </html>
   );

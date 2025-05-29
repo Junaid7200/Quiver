@@ -50,8 +50,20 @@ export default function bleh() {
 
     return (
         <main className="min-h-screen w-[100%] mt-[3%]">
-            <p className='text-4xl'>Welcome back, {name}!</p>
-            <p className="text-[#A1A1AA]">Track your learning progress and continue where you left off.</p>
+            <p className='text-4xl pb-[1%]'>Welcome back, {name}!</p>
+            <p className="text-[#A1A1AA] mb-[2%]">Track your learning progress and continue where you left off.</p>
+            <article>
+                <div className="left border border-solid border-[#27272A] rounded-lg w-[70%] py-[2%] px-[3%]">
+                    <div className="heading flex items-stretch mb-[1%]">
+                        <Image src='/Assets/progress.svg' width={25} height={25} alt='progress' className="mr-[2%]"></Image>
+                        <p className="text-2xl">Study Progress</p>
+                    </div>
+                    <p className="text-[#A1A1AA]">Your weekly progress across all subjects</p>
+                </div>
+                <div className="right">
+
+                </div>
+            </article>
         </main>
     )
 }

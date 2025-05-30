@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import NewDeckModal from '../../components/NewDeckModal';
 import Spinner from '../../components/Spinner'
-import { createClient } from '../../../utils/supabase/client.ts'
+import { createClient } from '../../../utils/supabase/client'
 
 export default function flashcards() {
 
@@ -12,6 +12,23 @@ export default function flashcards() {
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedNotes, setSelectedNotes] = useState([]);
+
+    //Toggling selection of a note when clicked
+    const handleNoteSelect = (noteId) => {
+        setSelectedNotes((prev) =>
+            prev.includes(noteId)
+                ? prev.filter((id) => id !== noteId)
+                : [...prev, noteId]
+        );
+    };
+
+    //Expanding the note
+    const handleExpandNote = (noteID) => {
+        const note = notes.find(notey => n.id === noteID);
+        setIsModalOpen(true);
+        <NewDeckModal></NewDeckModal>
+    }
 
     //fetching notes from db when 'create new deck' modal is opened
     useEffect(() => {
@@ -53,7 +70,7 @@ export default function flashcards() {
                     setNotes([]);
                 }
                 finally {
-                    setLoading(false); // <--- Always set loading to false after attempt
+                    setLoading(false); 
                 }
             };
             fetchUserNotes();
@@ -71,7 +88,9 @@ export default function flashcards() {
                     <p className="text-[#A1A1AA]">Create and practise with spaced repitition.</p>
                 </div>
                 <div className='upper-right flex items-center justify-center'>
-                    <button className="flex items-center justify-center whitespace-nowrap px-[30%] py-[12%] rounded-xl bg-[#32E0C4] text-sm text-black align-middle" onClick={() => setIsModalOpen(true)}>
+                    <button 
+                        className="flex items-center justify-center whitespace-nowrap px-[30%] py-[12%] rounded-xl bg-[#32E0C4] text-sm text-black align-middle" 
+                        onClick={() => setIsModalOpen(true)}>
                         <Image src='/Assets/plus-icon.svg' width={20} height={20} alt='Plus icon' className="mr-[13%]"></Image>New Deck
                     </button>
                 </div>
@@ -101,9 +120,40 @@ export default function flashcards() {
                     </div>
                     {loading ? (
                         <Spinner />
+                    ) : notes.length === 0 ? (
+                        <div className="flex min-h-[80%]">
+                            <Image src='/Assets/plus-icon.svg' alt='Create Note' height={40} width={40} className='mr-[8%]'></Image>
+                            <p>Create notes to automatically generate flashcards for them.</p>
+                        </div>
                     ) : (
-                        <div className="space-y-4 max-h-[300px] overflow-y-auto">
+                        <div className="space-y-4 min-h-[79%] max-h-[80%] overflow-y-auto">
+                            {notes.map((note) => (
+                                <div key={note.id}
+                                    className={`relative p-4 w-full max-w-[28%] h-[120px] rounded-lg border border-[#27272A] bg-[#18181B] hover:bg-[#27272A] transition cursor-pointer overflow-hidden group`}
+                                    onClick={() => handleNoteSelect(note.id)}>
+                                    <h3 className="text-lg font-semibold text-white mb-1">{note.title}</h3>
+                                    {/* Note Content with fade effect */}
+                                    <div className="text-sm text-[#A1A1AA] overflow-hidden relative h-[60%]">
+                                        <p className="line-clamp-[5] pr-6">{note.content}</p>
 
+                                        {/* Fade effect using absolute gradient */}
+                                        <div className="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-[#18181B] to-transparent pointer-events-none" />
+                                    </div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent parent click (event bubbling) (e is the event that occured)
+                                            handleExpandNote(note.id);
+                                        }}
+                                        className="absolute top-2 right-2 p-1 bg-[#27272A] rounded-full hover:bg-[#3F3F46] transition"
+                                    >
+                                        <Image src="/Assets/expand-icon.svg" width={16} height={16} alt="Expand note" />
+                                    </button>
+                                    
+                                    {selectedNotes.includes(note.id) && (   //the part on RHS of && will be renedered if condition on LHS is true
+                                        <div className="absolute inset-0 border-1 border-[#32E0C4] rounded-lg pointer-events-none" /> //this div will act as the border
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

@@ -347,7 +347,7 @@ const validatePhoneNumber = (phone) => {
 
     return (
         <div className="flex h-100vh bg-[#09090B]">
-            <div className="m-10 pomodoro-timer w-[40%] h-[70%] bg-[#09090B] border border-gray-500 rounded-2xl flex items-center flex-col">
+            <div className="m-10 pomodoro-timer w-[40%]  bg-[#09090B] border border-gray-500 rounded-2xl flex items-center flex-col px-6 py-12">
                 <h2 className="">Pomodoro Timer</h2>
                 <p className="text-gray-400 mb-[20px]">Work in focused intervals for maximum productivity</p>
                 {isRunning && (
@@ -442,7 +442,7 @@ const validatePhoneNumber = (phone) => {
 
 
             {/* Accountability Partner Setup */}
-            <div className="accountability-setup m-10 w-[25%] h-[70%] bg-[#09090B] border border-gray-500 rounded-2xl flex flex-col items-center p-6">
+            <div className="accountability-setup m-10 w-[25%] bg-[#09090B] border border-gray-500 rounded-2xl flex flex-col items-center px-6 py-12">
                 <h2 className="text-xl mb-2">Accountability Partner</h2>
                 <p className="text-gray-400 mb-6 text-center">Set up someone to keep you accountable during focus sessions</p>
                 
@@ -471,7 +471,7 @@ const validatePhoneNumber = (phone) => {
                             }}
                             placeholder="+923120720020"
                             className="w-full p-3 bg-[#27272A] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-[#FF6B9E] focus:outline-none"
-                            maxlength="13"
+                            maxLength="13"
                         />
                             {/* Validation message */}
                             {accountabilityPhone && !validatePhoneNumber(accountabilityPhone) && (
@@ -536,7 +536,7 @@ const validatePhoneNumber = (phone) => {
 
             
             {/* Check-in settings */}
-            <div className="check-in-settings m-10 w-[30%] h-[70%] bg-[#09090B] border border-gray-500 rounded-2xl flex flex-col items-center p-6">
+            <div className="check-in-settings m-10 w-[30%] min-h-[70%] bg-[#09090B] border border-gray-500 rounded-2xl flex flex-col items-center px-6 py-12">
                 <h2 className="text-xl mb-2">Focus Check-ins</h2>
                 <p className="text-gray-400 mb-6 text-center">Select how many times you want to be checked on during your focus session</p>
                 

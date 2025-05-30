@@ -32,7 +32,7 @@ export default function DashboardPage({ children }) {
             <div className="flex justify-end pt-[1%] pr-[2%]">
               <NavBar />
             </div>
-            <main className="">{children}</main>
+            <main className="mt-[3%] px-[4%]">{children}</main>
           </div>
         </div>
       </body>

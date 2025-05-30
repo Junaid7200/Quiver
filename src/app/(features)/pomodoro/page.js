@@ -348,7 +348,7 @@ const validatePhoneNumber = (phone) => {
     return (
         <div className="flex h-100vh bg-[#09090B]">
             <div className="m-10 pomodoro-timer w-[40%]  bg-[#09090B] border border-gray-500 rounded-2xl flex items-center flex-col px-6 py-12">
-                <h2 className="">Pomodoro Timer</h2>
+                <h2 className="font-semibold text-2xl">Pomodoro Timer</h2>
                 <p className="text-gray-400 mb-[20px]">Work in focused intervals for maximum productivity</p>
                 {isRunning && (
                     <div className="bg-[#FF6B9E]/20 text-[#FF6B9E] p-2 rounded-md mb-2 text-sm">
@@ -443,7 +443,7 @@ const validatePhoneNumber = (phone) => {
 
             {/* Accountability Partner Setup */}
             <div className="accountability-setup m-10 w-[25%] bg-[#09090B] border border-gray-500 rounded-2xl flex flex-col items-center px-6 py-12">
-                <h2 className="text-xl mb-2">Accountability Partner</h2>
+                <h2 className="text-2xl font-semibold mb-2">Accountability Partner</h2>
                 <p className="text-gray-400 mb-6 text-center">Set up someone to keep you accountable during focus sessions</p>
                 
                 {!isPhoneSet ? (
@@ -537,7 +537,7 @@ const validatePhoneNumber = (phone) => {
             
             {/* Check-in settings */}
             <div className="check-in-settings m-10 w-[30%] min-h-[70%] bg-[#09090B] border border-gray-500 rounded-2xl flex flex-col items-center px-6 py-12">
-                <h2 className="text-xl mb-2">Focus Check-ins</h2>
+                <h2 className="text-2xl font-semibold mb-2">Focus Check-ins</h2>
                 <p className="text-gray-400 mb-6 text-center">Select how many times you want to be checked on during your focus session</p>
                 
                 <div className="check-in-selector flex flex-col items-center w-full">

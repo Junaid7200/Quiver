@@ -78,8 +78,8 @@ export default function flashcards() {
     }, [isModalOpen])
 
     return (
-        <main className='mt-[1%] w-[100%] min-h-screen pr-[1%]'>
-            <div className='upper flex justify-between w-[100%] mb-[3%]'>
+        <main className='w-[100%] min-h-screen pr-[1%]'>
+            <div className='upper flex justify-between w-[100%] mb-[3%] h-[20%]'>
                 <div className='upper-left'>
                     <div className='flex items-end mb-[3%]'>
                         <Image src='/Assets/flashcards-colored.svg' width={35} height={35} alt='flashcards icon' className="mr-[2%]"></Image>
@@ -95,12 +95,12 @@ export default function flashcards() {
                     </button>
                 </div>
             </div>
-            <div className="lower flex justify-between w-[100%]">
+            <div className="lower flex justify-between w-[100%] h-[80%]">
                 <div className="lower-left flex flex-col gap-[3%] w-[45%]">
-                    <div className="border-1 border-solid border-[#09090B] rounded-lg w-[100%]">
+                    <div className=" lower-left-upper border border-solid border-[#09090B] rounded-lg w-[100%] min-h-[70%] px-[1%] py-[10%]">
 
                     </div>
-                    <div className="border-1 border-solid border-[#09090B] rounded-lg w-[100%] px-[1%] py-[10%]">
+                    <div className="lower-left-lower border border-solid border-[#09090B] rounded-lg w-[100%] min-h[30%] px-[1%] py-[10%]">
                         <div className="flex items-center mb-[2%]">
                             <Image src='/Assets/AI-flashcard-icon.svg' height={20} width={20} alt='AI icon' className="mr-[2%]"></Image>
                             <p className="text-xl">AI Flashcard Generator</p>
@@ -108,22 +108,23 @@ export default function flashcards() {
                         <p className="text-[#A1A1AA]">Automatically create flashcards from your notes using AI.</p>
                     </div>
                 </div>
-                <div className="lower-right border-1 border-solid border-[#09090B] rounded-lg w-[55%]">
+                <div className="lower-right border-1 border-solid border-[#09090B] rounded-lg w-[55%] min-h-[100%] px-[1%] py-[10%]">
 
                 </div>
             </div>
             <NewDeckModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <div className="w-[100%] px-[3%] py-[2%]">
+                <div className="w-[100%] h-[100%] px-[3%] py-[2%]">
                     <div className='Headingg'>
                         <p className="text-3xl pb-[1%]">Create New Deck of Flashcards</p>
                         <p className="text-mdtext-[#A1A1AA]">&nbsp;Choose the notes whose flashcards you want to generate.</p>
                     </div>
                     {loading ? (
-                        <Spinner />
+                        <div className="flex min-h-[79%] justify-center items-center">
+                            <Spinner />
+                        </div>
                     ) : notes.length === 0 ? (
-                        <div className="flex min-h-[80%]">
-                            <Image src='/Assets/plus-icon.svg' alt='Create Note' height={40} width={40} className='mr-[8%]'></Image>
-                            <p>Create notes to automatically generate flashcards for them.</p>
+                        <div className="flex min-h-[79%] text-[#A1A1AA] justify-center items-center">
+                            <p>You don't have any notes.</p>
                         </div>
                     ) : (
                         <div className="space-y-4 min-h-[79%] max-h-[80%] overflow-y-auto">

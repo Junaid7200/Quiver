@@ -48,7 +48,7 @@ export async function POST(request) {
             content: `You are a helpful assistant that suggests relevant learning resources. Based on the content provided, suggest 3-5 useful websites or resources for further learning. Format your response as a numbered list with each item containing:
             1. [Title] - URL
             
-            Use real, existing websites like Wikipedia, educational sites, documentation, etc. Make sure URLs are valid and relevant.`
+            Use real, existing websites like Wikipedia, geekforgeeks, StackOverflow, w3schools, MDN, documentation, or links of articles from google scholar, sciencedirect etc. Make sure URLs are valid and relevant.`
           },
           {
             role: "user", 

@@ -29,3 +29,26 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent;
+  opacity: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Show scrollbar only on hover */
+.tags-div:hover .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #9B87F5;
+}

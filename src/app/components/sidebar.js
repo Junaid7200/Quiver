@@ -24,12 +24,12 @@ export default function Sidebar() {
 
     return (
         <aside className="w-[18%] min-h-screen flex flex-col justify-between border-r border-solid border-[#27272A] px-[1%] py-[1%]">
-            <div className="Upper">
+            <div className="Upper h-[85%] flex flex-col">
                 <div className="logo flex items-center h-[40px] w-[100%] mb-[13%]">
                     <Image src='/Assets/quiver-logo.svg' alt='QUiver' width={35} height={35} className="mr-[4%]"></Image>
                     <p className='text-2xl tracking-wide'>Quiver</p>
                 </div>
-                <div className="MainSection">
+                <div className="MainSection flex-grow">
                     <ul className="space-y-2">
                         {menuItems.map((item) => {
                             const isActive = pathName === item.path;

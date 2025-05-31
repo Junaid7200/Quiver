@@ -32,7 +32,7 @@ export default function FeaturesPage({ children }) {
             <div className="flex justify-end pt-[1%] pr-[2%]">
               <NavBar />
             </div>
-            <main className="mt-[2%] px-[4%] flex-1 overflow-auto">{children}</main>
+            <main className="mt-[2%] px-[4%] flex-1 overflow-auto custom-scrollbar">{children}</main>
           </div>
         </div>
       </body>

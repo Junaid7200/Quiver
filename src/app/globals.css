@@ -52,3 +52,90 @@ body {
 .tags-div:hover .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #9B87F5;
 }
+
+
+/* Add this at the bottom of your file */
+@keyframes pulse-highlight {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(155, 135, 245, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(155, 135, 245, 0);
+  }
+}
+
+.animate-pulse-highlight {
+  animation: pulse-highlight 1.5s ease-in-out;
+}
+
+/* Add these at the bottom of your file */
+@keyframes modal-fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.fixed.inset-0.z-50 {
+  animation: modal-fade-in 0.2s ease-out;
+}
+
+
+
+
+
+.tox .tox-edit-area__iframe {
+  background-color: #1E1E1E !important;
+}
+
+.tox .tox-toolbar__primary {
+  background-color: #27272A !important;
+}
+
+.tox .tox-tbtn svg {
+  fill: #fff !important;
+}
+
+.tox .tox-tbtn:hover {
+  background-color: #3D3D46 !important;
+}
+
+
+
+.tox .tox-tbtn--enabled,
+.tox .tox-tbtn--enabled:hover {
+  background: #5222D0 !important;
+}
+
+.tox .tox-tbtn:hover {
+  background: rgba(155, 135, 245, 0.3) !important;
+}
+
+.tox .tox-statusbar {
+  border-top: 1px solid #3d3d3d !important;
+}
+
+.tox .tox-statusbar__resize-handle {
+  background-color: #9B87F5 !important;
+}
+
+.tox-tinymce {
+  border-color: #3d3d3d !important;
+}
+
+.tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+  border-right: 1px solid #3d3d3d !important;
+}
+
+.tox .tox-collection--list .tox-collection__item--active {
+  background-color: #5222D0 !important;
+}
+
+.tox .tox-collection--list .tox-collection__item--enabled {
+  background-color: #9B87F5 !important;
+}
+
+.tox .tox-collection__item:hover {
+  background-color: rgba(155, 135, 245, 0.3) !important;
+}
+

@@ -20,22 +20,22 @@ export default function indexPage() {
     const supabase = createClient();    // create connection with supabase
 
 // the [] means the useEffect will run only once when the component mounts
-    useEffect(() => {
-        checkAuthStatus();
-    }, []);
+    // useEffect(() => {
+    //     checkAuthStatus();
+    // }, []);
 
 // Function to check if the user is already logged in
-    const checkAuthStatus = async () => {
-        try {
-            const { data: { user } } = await supabase.auth.getUser();   // getUser is a promise thats why we have await behind it
-            if (user) {
-                router.push('/dashboard');
-            }
-        } 
-        catch (error) {
-            console.error('Error checking auth status:', error);
-        }
-    };
+    // const checkAuthStatus = async () => {
+    //     try {
+    //         const { data: { user } } = await supabase.auth.getUser();   // getUser is a promise thats why we have await behind it
+    //         if (user) {
+    //             router.push('/dashboard');
+    //         }
+    //     } 
+    //     catch (error) {
+    //         console.error('Error checking auth status:', error);
+    //     }
+    // };
 
 
     function signup() {
@@ -82,32 +82,47 @@ export default function indexPage() {
                 {/* 5 sections, the features */}
                 <div className="outerCards w-full flex justify-center items-center">
                     <div className="innerCards max-w-8xl h-[100%] flex flex-wrap justify-center mx-auto gap-4 items-stretch">
-                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%]">
-                            <Image src='/Assets/landingPage/notesIcon.svg' alt='Notes Icon' width={50} height={50}></Image>
-                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Smart Notes</p>
-                            <p className='text-[#A1A1AA] tracking-wider'>Take notes normally while AI organizes and
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] transform transition-all duration-300 hover:scale-105 hover:rotate-1 hover:shadow-lg hover:shadow-purple-900/20 hover:border-[#9B87F5] group">
+                            <div className="transform transition-all duration-300 group-hover:scale-110 group-hover:translate-y-[-5px]">
+                                <Image src='/Assets/landingPage/notesIcon.svg' alt='Notes Icon' width={50} height={50} className="transition-all duration-300 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(155,135,245,0.6)]"></Image>
+                            </div>
+                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%] transition-all duration-300 group-hover:text-white">Smart Notes</p>
+                            <p className='text-[#A1A1AA] tracking-wider transition-all duration-300 group-hover:text-gray-200'>Take notes normally while AI organizes and
                                 enhances them automatically.</p>
                         </div>
-                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%]">
-                            <Image src='/Assets/landingPage/summariesIcon.svg' alt='Summaries Icon' width={50} height={50}></Image>
-                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">AI Summaries</p>
-                            <p className='text-[#A1A1AA] tracking-wider'>Get concise summaries of your notes to review key concepts quickly.</p>
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] transform transition-all duration-300 hover:scale-105 hover:rotate-1 hover:shadow-lg hover:shadow-purple-900/20 hover:border-[#9B87F5] group">
+                            <div className="transform transition-all duration-300 group-hover:scale-110 group-hover:translate-y-[-5px]">
+                                <Image src='/Assets/landingPage/summariesIcon.svg' alt='Summaries Icon' width={50} height={50} className="transition-all duration-300 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(155,135,245,0.6)]"></Image>
+                            </div>
+                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%] transition-all duration-300 group-hover:text-white">AI Summaries</p>
+                            <p className='text-[#A1A1AA] tracking-wider transition-all duration-300 group-hover:text-gray-200'>Get concise summaries of your notes to review key concepts quickly.</p>
                         </div>
-                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%]">
-                            <Image src='/Assets/landingPage/flashcardsIcon.svg' alt='Flashcards Icon' width={50} height={50}></Image>
-                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Auto Flashcards</p>
-                            <p className='text-[#A1A1AA] tracking-wider'>AI-generated flashcards from your notes to test your knowledge.</p>
+
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] transform transition-all duration-300 hover:scale-105 hover:rotate-1 hover:shadow-lg hover:shadow-purple-900/20 hover:border-[#9B87F5] group">
+                            <div className="transform transition-all duration-300 group-hover:scale-110 group-hover:translate-y-[-5px]">
+                                <Image src='/Assets/landingPage/flashcardsIcon.svg' alt='Flashcards Icon' width={50} height={50} className="transition-all duration-300 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(155,135,245,0.6)]"></Image>
+                            </div>
+                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%] transition-all duration-300 group-hover:text-white">Auto Flashcards</p>
+                            <p className='text-[#A1A1AA] tracking-wider transition-all duration-300 group-hover:text-gray-200'>AI-generated flashcards from your notes to test your knowledge.</p>
                         </div>
-                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%]">
-                            <Image src='/Assets/landingPage/quizzesIcon.svg' alt='Quizzes Icon' width={50} height={50}></Image>
-                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Smart Quizzes</p>
-                            <p className='text-[#A1A1AA] tracking-wider'>Custom quizzes based on your notes to reinforce
+
+                        
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] transform transition-all duration-300 hover:scale-105 hover:rotate-1 hover:shadow-lg hover:shadow-purple-900/20 hover:border-[#9B87F5] group">
+                            <div className="transform transition-all duration-300 group-hover:scale-110 group-hover:translate-y-[-5px]">
+                                <Image src='/Assets/landingPage/quizzesIcon.svg' alt='Quizzes Icon' width={50} height={50} className="transition-all duration-300 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(155,135,245,0.6)]"></Image>
+                            </div>
+                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%] transition-all duration-300 group-hover:text-white">Smart Quizzes</p>
+                            <p className='text-[#A1A1AA] tracking-wider transition-all duration-300 group-hover:text-gray-200'>Custom quizzes based on your notes to reinforce
                                 your learning.</p>
                         </div>
-                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%]">
-                            <Image src='/Assets/landingPage/focusModeIcon.svg' alt='Focus Mode Icon' width={50} height={50}></Image>
-                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%]">Focus Mode</p>
-                            <p className='text-[#A1A1AA] tracking-wider'>Pomodoro timer with rewards to keep you focused during study sessions.</p>
+
+
+                        <div className="border border-solid border-[#E3DEED] rounded-lg bg-[#27272A] py-[2%] px-[2%] mb-[2%] mr-[2%] w-[27%] transform transition-all duration-300 hover:scale-105 hover:rotate-1 hover:shadow-lg hover:shadow-purple-900/20 hover:border-[#9B87F5] group">
+                            <div className="transform transition-all duration-300 group-hover:scale-110 group-hover:translate-y-[-5px]">
+                                <Image src='/Assets/landingPage/focusModeIcon.svg' alt='Focus Mode Icon' width={50} height={50} className="transition-all duration-300 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(155,135,245,0.6)]"></Image>
+                            </div>
+                            <p className="text-[#9B87F5] text-xl pt-[5%] pb-[3%] transition-all duration-300 group-hover:text-white">Focus Mode</p>
+                            <p className='text-[#A1A1AA] tracking-wider transition-all duration-300 group-hover:text-gray-200'>Pomodoro timer with rewards to keep you focused during study sessions.</p>
                         </div>
                     </div>
                 </div>
@@ -145,7 +160,7 @@ export default function indexPage() {
 
 
             {/*Pricing Section*/ }
-            <div id="pricing-section" className="pricing-section py-20 w-full bg-[#09090B] relative">
+            <div id="pricing-section" className="pricing-section py-20 w-full relative">
                 <div className="absolute inset-0 bg-gradient-to-b from-black to-transparent opacity-50"></div>
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">

@@ -63,7 +63,7 @@ export default function AboutPage() {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-tr from-[#5222D0] to-transparent opacity-20 rounded-lg transform rotate-3"></div>
             <Image 
-              src="/Assets/landingPage/about-team.jpg" 
+              src="/Assets/landingPage/landingPage.svg" 
               alt="Quiver team" 
               width={600} 
               height={400}

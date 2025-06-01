@@ -32,10 +32,23 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Custom scrollbar styling */
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
-  background-color: black;
+  background-color: transparent;
   opacity: 0;
 }
 
@@ -47,12 +60,6 @@ body {
 .custom-scrollbar::-webkit-scrollbar-button {
   display: none;
 }
-
-/* Show scrollbar only on hover */
-.tags-div:hover .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #9B87F5;
-}
-
 
 /* Add this at the bottom of your file */
 @keyframes pulse-highlight {

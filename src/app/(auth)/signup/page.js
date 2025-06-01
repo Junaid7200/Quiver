@@ -574,7 +574,7 @@ const handleSocialSignUp = async (provider) => {
         icon={<AppleIcon />}
         text="Apple"
         borderColor="white"
-        onClick={() => handleSocialSignUp('apple')}
+        onClick={() => router.push('/not-found')}
         disabled={isLoading}
         className="hover:scale-105 hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] transition-all duration-300 relative overflow-hidden"
         style={{

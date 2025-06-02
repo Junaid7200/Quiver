@@ -634,7 +634,7 @@ const deleteNote = async (noteId) => {
               </div>
             ) : null}
             
-  <div className="folders-list flex flex-col overflow-y-auto">
+  <div className="folders-list flex flex-col overflow-y-auto custom-scrollbar">
     <div 
       className={`p-2 mb-1 rounded-md cursor-pointer transition-colors ${
         currentFolder === null ? 'bg-[#5222D0]' : 'hover:bg-[#27272A]'

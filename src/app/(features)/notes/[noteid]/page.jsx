@@ -459,7 +459,7 @@ const truncateForApi = (content, maxChars = 6000) => {
       'bold italic underline | alignleft aligncenter ' +
       'alignright alignjustify | bullist numlist outdent indent | ' +
       'link | removeformat | help',
-        font_formats:
+      font_formats:
     'Arial=arial,helvetica,sans-serif;' +
     'Courier New=courier new,courier,monospace;' +
     'Georgia=georgia,times new roman,times,serif;' +
@@ -494,6 +494,25 @@ const truncateForApi = (content, maxChars = 6000) => {
         .mce-content-body table { border-collapse: collapse; }
         .mce-content-body blockquote { border-left: 3px solid #9B87F5; padding-left: 10px; margin-left: 1.5em; }
         .mce-content-body code { background: #0E0E0E; padding: 2px 4px; border-radius: 3px; }
+
+            /* Scrollbar styles for Webkit (Chrome, Safari, Edge, Opera) */
+          body::-webkit-scrollbar {
+              width: 10px; /* Width of the vertical scrollbar */
+              background-color: transparent; /* Remove background of the scrollbar track */
+          }
+      
+          body::-webkit-scrollbar-thumb {
+              background-color: #9B87F5; /* Color of the scroll thumb */
+              border-radius: 5px; /* Rounded corners for the thumb */
+          }
+      
+          body::-webkit-scrollbar-track {
+              background-color: transparent; /* Remove background of the track */
+          }
+      
+          body::-webkit-scrollbar-button {
+              display: none; /* Hide the up and down arrows */
+          }
     `,
     formats: {
       removeformat: [

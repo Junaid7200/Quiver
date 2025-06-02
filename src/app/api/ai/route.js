@@ -27,7 +27,7 @@ export async function POST(request) {
           },
           {
             role: "user", 
-            content: `Summarize this text: ${content}`
+            content: `Summarize this text, do not write any filler text before or after the summary like "here is the summary" etc. anyways, here is the text: ${content}`
           }
         ],
         model: "llama3-70b-8192",

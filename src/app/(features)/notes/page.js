@@ -544,7 +544,15 @@ const deleteNote = async (noteId) => {
     <div className="main-div flex flex-col">
 <div className="heading-div flex justify-between item-start px-6 pt-6 pb-0">
   <div>
-    <h1 className="text-3xl font-semibold">Notes</h1>
+    <h1 className="text-3xl font-semibold">
+    <Image
+      src="/Assets/notesTabLogo.svg"
+      alt="Notes Icon"
+      width={32}
+      height={32}
+      className="inline-block mr-2 mb-2"
+    />
+    Notes</h1>
     <p className="text-gray-400">Create, organize, and review your notes.</p>
   </div>
   
@@ -566,7 +574,7 @@ const deleteNote = async (noteId) => {
         <div className="flex flex-col w-[20%]">
 
 
-          <div className="folders-div flex flex-col bg-[#09090B] border border-gray-500 rounded-2xl h-[50%] p-6">
+          <div className="folders-div flex flex-col border border-gray-500 rounded-2xl h-[50%] p-6">
             <div className="folder-div-header flex justify-between items-center mb-4">
               <div className="flex items-center">
                 <Image
@@ -725,7 +733,7 @@ const deleteNote = async (noteId) => {
 
 
           {/* Tags column */}
-              <div className="tags-div border border-gray-500 rounded-2xl h-[20%] p-6 mt-6 bg-[#09090B] flex flex-col">
+              <div className="tags-div border border-gray-500 rounded-2xl h-[20%] p-6 mt-6 flex flex-col">
                 <div className="folder-div-header flex items-center mb-4">
                   <Image
                     src="/Assets/tags.svg"
@@ -766,7 +774,7 @@ const deleteNote = async (noteId) => {
 </div>
 
         {/* Recent Notes column */}
-    <div className="notes-display-div border border-gray-500 rounded-2xl w-[90%] h-[72.5%] p-12 bg-[#09090B] flex flex-col">
+    <div className="notes-display-div border border-gray-500 rounded-2xl w-[90%] h-[72.5%] p-12 flex flex-col">
         <div className="flex justify-between items-center mb-4">
         <div className="folder-div-header flex flex-col gap-6">
           <h2 className="text-xl font-semibold text-white">

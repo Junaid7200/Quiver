@@ -6,6 +6,9 @@ import Image from "next/image"
 import { createClient } from '../utils/supabase/client';
 import HeaderButtons from './components/LandingPageNavBar';
 import PageFooter from './components/landingPageFooter';
+import AnimatedSvg from '/public/Assets/animatedLandingPage.svg';
+
+
 
 export default function indexPage() {
     const router = useRouter()
@@ -56,16 +59,22 @@ export default function indexPage() {
             <div className="UpperSection pl-[80px] pr-[80px] bg-black my-[8%] w-full flex items-center justify-between">
                 <div className=" text mr-[70px] w-[60%]">
                     <div className="w-[100%] pt-[27px]">
-                        <div><p className="text-white text-8xl font-bold">Aim.</p></div>
-                        <div><p className="text-[#EC615B] text-8xl font-bold ml-[20%]">Note.</p></div>
-                        <div><p className="text-[#5222D0] text-8xl font-bold ml-[43%]">Navigate.</p></div>
+                        <div><p className="text-white text-8xl font-bold animate-fadeIn">Aim.</p></div>
+                        <div><p className="text-[#EC615B] text-8xl font-bold ml-[20%] animate-fadeIn animation-delay-300">Note.</p></div>
+                        <div><p className="text-[#5222D0] text-8xl font-bold ml-[43%] animate-fadeIn animation-delay-600">Navigate.</p></div>
                     </div>
                     <div className="w-[100%] text-gray-700 pt-[5%]">
-                        <p className="w-[100%] text-2xl">Our mission is to offer dynamic AI-based assessments and note-taking tools to help you learn better, faster, and more effectively.</p>
+                        <p className="w-[100%] text-2xl animate-fadeIn animation-delay-1200">Our mission is to offer dynamic AI-based assessments and note-taking tools to help you learn better, faster, and more effectively.</p>
                     </div>
                 </div>
-                <div className="Image w-[40%]">
-                    <Image src="/Assets/landingPage/landingPage.svg" width={650} height={446} alt='Girl painting on a big screen in front of her'></Image>
+                <div className="Image mr-50 -mt-20 w-[40%]">
+                    <Image
+                        src={"/Assets/landingPage/landingPage.svg"}
+                        alt="Animated Landing Page"
+                        width={600}
+                        height={400}
+                        className="w-full h-auto animate-fadeIn animation-delay-1500"
+                    />
                 </div>
             </div>
 

@@ -3,11 +3,14 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createClient } from '../../utils/supabase/client.ts'
 import { useRouter } from "next/navigation";
+import { useTheme } from '../components/ThemeContext';
+import Link from "next/link";
 
 export default function NavBar() {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const router = useRouter();
+    const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
            const fetchUserData = async () => {
@@ -57,11 +60,32 @@ export default function NavBar() {
         console.error("NavBar Error:", error);
     }
 
+
+// function to go to the profile page when the profile-button is clicked:
+    const handleProfileClick = () => {
+        router.push('../profile');
+    };
+
+// function to go to the settings page when the settings-button is clicked:
+    const handleSettingsClick = () => {
+        router.push('../settings');
+    };
+
     return (
         <div className="w-[15%] flex justify-end">
-            <button className='pr-[22px]'><Image src='/Assets/dayTheme.svg' width={30} height={30} alt='Day Theme Icon'></Image></button>
-            <button className='pr-[22px]'><Image src='/Assets/settingsIcon.svg' width={30} height={30} alt='Settings Icon'></Image></button>
-            <div className="w-[45px] h-[45px] rounded-full bg-[#32E0C4] flex justify-center items-center"><p className="text-center">{userInitials}</p></div>
+            <button 
+                onClick={toggleTheme} 
+                className='light-dark-mode-button pr-[22px] transition-transform hover:scale-110'
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+                {theme === 'dark' ? (
+                    <Image src='/Assets/dayTheme.svg' width={30} height={30} alt='Switch to Light Theme' />
+                ) : (
+                    <Image src='/Assets/darkTheme.svg' width={30} height={30} alt='Switch to Dark Theme' />
+                )}
+            </button>
+            <button onClick={handleSettingsClick} className='cursor-pointer settings-button pr-[22px]'><Image src='/Assets/settingsIcon.svg' width={30} height={30} alt='Settings Icon'></Image></button>
+            <div onClick={handleProfileClick} className="cursor-pointer profile-button w-[45px] h-[45px] rounded-full bg-[#32E0C4] flex justify-center items-center"><p className="text-center">{userInitials}</p></div>
         </div>
     )
 }

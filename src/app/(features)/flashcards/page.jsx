@@ -6,6 +6,8 @@ import NewDeckModal from '../../components/NewDeckModal';
 import Spinner from '../../components/Spinner'
 import { createClient } from '../../../utils/supabase/client'
 import { useRouter } from 'next/navigation';
+import FlashcardSuccessModal from '../../components/FlashcardSuccessModal';
+import CancelNewdeckModal from '../../components/CancelNewdeckModal';
 
 export default function flashcards() {
 
@@ -14,6 +16,11 @@ export default function flashcards() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedNote, setSelectedNote] = useState(null); //contains the selected note's id
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const [generatedDeckId, setGeneratedDeckId] = useState(null);
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const [generatedFlashcards, setGeneratedFlashcards] = useState([]); // to Store flashcards temporarily
+    const [generatedDeck, setGeneratedDeck] = useState(null);
     const router = useRouter();
 
     //Toggling selection of a note when clicked
@@ -102,46 +109,30 @@ export default function flashcards() {
             const { data: { user }, error: authError } = await supabase.auth.getUser();
             if (authError) throw authError;
 
-            // 1. Create new flashcard deck
-            const { data: deck, error: deckError } = await supabase
-                .from('flashcard_decks')
-                .insert({
-                    user_id: user.id,
-                    name: selectedNoteData.title, // Use note's title as deck name
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString(),
-                    deck_folder_id: null
-                })
-                .select()
-                .single();
+            // Creating deck object without saving to database yet
+            const newDeck = {
+                user_id: user.id,
+                name: selectedNoteData.title,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                deck_folder_id: null
+            };
 
-            if (deckError) throw deckError;
-
-            // 2. Generate flashcards using Grok API
-            // TODO: Replace with actual Grok API implementation
+            // Generating flashcards using Grok API
             const flashcardsData = await generateFlashcardsFromNote(selectedNoteData.content);
 
-            // 3. Insert flashcards into the flashcards table
+            // Temporarily storing flashcards 
             const flashcardsToInsert = flashcardsData.map(card => ({
-                deck_id: deck.id,
                 front_content: card.question,
                 back_content: card.answer,
                 created_at: new Date().toISOString(),
-                note_id: selectedNote,
-                last_reviewed: null,
-                next_review_date: null,
-                review_count: 0
+                note_id: selectedNote
             }));
 
-            const { error: flashcardsError } = await supabase
-                .from('flashcards')
-                .insert(flashcardsToInsert);
-
-            if (flashcardsError) throw flashcardsError;
-
-            // Success! Close modal and optionally redirect
+            setGeneratedDeck(newDeck); // Store deck temporarily
+            setGeneratedFlashcards(flashcardsToInsert); // Store flashcards temporarily
             setIsModalOpen(false);
-            router.push(`/flashcards/${deck.id}`); // Assuming you'll have a deck view page
+            setIsSuccessModalOpen(true); // Open success modal
         }
         catch (error) {
             console.error('Error generating flashcards:', error);
@@ -151,6 +142,94 @@ export default function flashcards() {
         }
     }
 
+    /*save flashcards logic*/
+    const handleSaveFlashcards = async () => {
+        try {
+            const supabase = createClient();
+
+            // inserting the deck into the database
+            const { data: deck, error: deckError } = await supabase
+                .from('flashcard_decks')
+                .insert(generatedDeck)
+                .select()
+                .single();
+
+            if (deckError) throw deckError;
+
+            // Add deck_id to flashcards and insert them
+            const flashcardsWithDeckId = generatedFlashcards.map(card => ({
+                ...card,
+                deck_id: deck.id
+            }));
+
+            const { error: flashcardsError } = await supabase
+                .from('flashcards')
+                .insert(flashcardsWithDeckId);
+
+            if (flashcardsError) throw flashcardsError;
+
+            // Clear temporary data
+            setGeneratedDeck(null);
+            setGeneratedFlashcards([]);
+            setGeneratedDeckId(deck.id); // Store deck ID for viewing
+            setIsSuccessModalOpen(false);
+        } catch (error) {
+            console.error("Error saving flashcards:", error);
+            setError(error.message);
+        }
+    };
+
+    /*cancel logic*/
+    const handleCancel = () => {
+        setIsSuccessModalOpen(false);
+        setIsConfirmationModalOpen(true); // Open confirmation modal
+    };
+
+    const handleCancelWithoutSaving = () => {
+        setGeneratedDeck(null);
+        setGeneratedFlashcards([]); // Discard flashcards
+        setIsConfirmationModalOpen(false); // Close confirmation modal
+    };
+
+    const handleSaveAndCancel = async () => {
+        await handleSaveFlashcards(); // Save flashcards
+        setIsConfirmationModalOpen(false); // Close confirmation modal
+    };
+
+    const handleViewDeck = (deckId) => {
+        setIsSuccessModalOpen(false);
+        router.push(`/flashcards/${deckId}`);
+    };
+
+    const stripHtmlButPreserveStructure = (html) => {
+        if (!html) return '';
+
+        // Replace common block elements with newlines
+        let text = html.replace(/<\/(p|div|h1|h2|h3|h4|h5|h6|li|blockquote)>/gi, '\n');
+
+        // Replace list items with bullet points
+        text = text.replace(/<li[^>]*>/gi, '• ');
+
+        // Replace horizontal rules with separator
+        text = text.replace(/<hr[^>]*>/gi, '\n---\n');
+
+        // Remove all remaining HTML tags
+        text = text.replace(/<[^>]*>/g, '');
+
+        // Replace multiple newlines with double newlines
+        text = text.replace(/\n{3,}/g, '\n\n');
+
+        // Decode HTML entities
+        text = text.replace(/&nbsp;/g, ' ')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'");
+
+        return text.trim();
+    };
+
     // function for Grok API integration
     async function generateFlashcardsFromNote(noteContent) {
         try {
@@ -158,14 +237,16 @@ export default function flashcards() {
                 throw new Error('Note content is required');
             }
 
-            console.log('Sending note content to API:', noteContent.substring(0, 100) + '...'); // Debug log
+            const plainTextContent = stripHtmlButPreserveStructure(noteContent);
+
+            console.log('Sending note content to API:', plainTextContent.substring(0, 100) + '...'); // Debug log
 
             const response = await fetch('/api/flashcards', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ content: noteContent }),
+                body: JSON.stringify({ content: plainTextContent }),
             });
 
             if (!response.ok) {
@@ -198,7 +279,7 @@ export default function flashcards() {
                         <Image src='/Assets/flashcards-colored.svg' width={35} height={35} alt='flashcards icon' className="mr-[2%]"></Image>
                         <p className='text-4xl'>Flashcards</p>
                     </div>
-                    <p className="text-[#A1A1AA]">Create and practise with spaced repitition.</p>
+                    <p className="text-[#A1A1AA]">Create and practise with spaced repetition.</p>
                 </div>
                 <div className='upper-right flex items-center justify-center'>
                     <button
@@ -214,18 +295,19 @@ export default function flashcards() {
 
                     </div>
                     <div className="lower-left-lower border border-solid border-[#09090B] rounded-lg w-[100%] h[30%] px-[1%] py-[10%]">
-                        <div className="flex items-center mb-[2%]">
-                            <Image src='/Assets/AI-flashcard-icon.svg' height={20} width={20} alt='AI icon' className="mr-[2%]"></Image>
-                            <p className="text-xl">AI Flashcard Generator</p>
-                        </div>
-                        <p className="text-[#A1A1AA]">Automatically create flashcards from your notes using AI.</p>
+                        
                     </div>
                 </div>
                 <div className="lower-right border-1 border-solid border-[#09090B] rounded-lg w-[55%] h-full px-[1%] py-[10%]">
 
                 </div>
             </div>
-            <NewDeckModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <NewDeckModal 
+                isOpen={isModalOpen} 
+                onClose={() => {
+                    console.log('Closing Modal'); //for debugging
+                    setIsModalOpen(false)
+                }}>
                 <div className="w-[100%] h-[100%] px-[5%] py-[3%] relative">
                     <div className='Headingg mb-[3%]'>
                         <p className="text-3xl pb-[1%]">Create New Deck of Flashcards</p>
@@ -272,7 +354,7 @@ export default function flashcards() {
                             </div>
                             <div className="absolute bottom-0 left-0 right-0 bg-[#09090B] px-6 pb-6 flex justify-end space-x-4">
                                 <button
-                                    onClick={() => {setSelectedNote(null); setIsModalOpen(false)}}
+                                    onClick={() => { setSelectedNote(null); setIsModalOpen(false) }}
                                     className="px-4 py-2 text-[#A1A1AA] hover:text-white transition-colors border border-[#32E0C4] rounded-lg"
                                 >
                                     Cancel
@@ -292,6 +374,22 @@ export default function flashcards() {
                     )}
                 </div>
             </NewDeckModal>
+            {/* Flashcard Success Modal */}
+            <FlashcardSuccessModal
+                isOpen={isSuccessModalOpen}
+                onPreview={() => console.log("Preview flashcards")}
+                onSave={handleSaveFlashcards}
+                onCancel={handleCancel}
+                onView={() => handleViewDeck(generatedDeckId)}
+            />
+
+            {/* Cancel Confirmation Modal */}
+            <CancelNewdeckModal
+                isOpen={isConfirmationModalOpen}
+                onCancelWithoutSaving={handleCancelWithoutSaving}
+                onSaveAndCancel={handleSaveAndCancel}
+                onClose={() => setIsConfirmationModalOpen(false)}
+            />
         </main>
     )
 }

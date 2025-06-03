@@ -218,7 +218,7 @@ const handleChange = (e) => {
                 <div className='bg-[#1E1E1E] rounded-2xl py-15 px-20 w-full'>
                 <h1 className="text-2xl font-semibold text-center mb-6">Sign In to Your Account</h1>                
                 <p className="text-gray-400 text-sm text-center mb-6">Continue your journey</p>   
-                <form onSubmit={handleSubmit} className="space-y-4 mb-20">
+                <form onSubmit={handleSubmit} className="space-y-4 mb-15">
                     <InputField
                             id="identifier"
                             name="identifier"

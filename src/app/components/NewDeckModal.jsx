@@ -26,12 +26,21 @@ export default function NewDeckModal({ isOpen, onClose, children }) {
 
     return (
         <div className="w-full h-screen fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+            <div
+                onClick={onClose} // Add click handler to backdrop
+                className="absolute inset-0"
+            />
             <div className="w-[80%] h-[80%] bg-[#09090B] text-white rounded-lg shadow-lg border-1 border-solid border-[#32E0C4] relative">
                 <button
                     onClick={onClose}
-                    className="absolute top-3 right-3 hover:scale-110"
+                    className="absolute top-3 right-3 hover:scale-110 z-10"
                 >
-                    <Image src='/Assets/close-icon.svg' width={25} height={25} alt='close button'></Image>
+                    <Image 
+                        src='/Assets/close-icon.svg' 
+                        width={25} 
+                        height={25} 
+                        alt='close button'
+                    />
                 </button>
                 {children}
             </div>

@@ -17,7 +17,6 @@ export default function flashcards() {
     const [error, setError] = useState(null);
     const [selectedNote, setSelectedNote] = useState(null); //contains the selected note's id
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-    const [generatedDeckId, setGeneratedDeckId] = useState(null);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
     const [generatedFlashcards, setGeneratedFlashcards] = useState([]); // to Store flashcards temporarily
     const [generatedDeck, setGeneratedDeck] = useState(null);
@@ -115,7 +114,6 @@ export default function flashcards() {
                 name: selectedNoteData.title,
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
-                deck_folder_id: null
             };
 
             // Generating flashcards using Grok API
@@ -171,11 +169,13 @@ export default function flashcards() {
             // Clear temporary data
             setGeneratedDeck(null);
             setGeneratedFlashcards([]);
-            setGeneratedDeckId(deck.id); // Store deck ID for viewing
             setIsSuccessModalOpen(false);
+
+            return deck.id; // Return the deck ID for use in view function
         } catch (error) {
             console.error("Error saving flashcards:", error);
             setError(error.message);
+            return null;
         }
     };
 
@@ -196,7 +196,12 @@ export default function flashcards() {
         setIsConfirmationModalOpen(false); // Close confirmation modal
     };
 
-    const handleViewDeck = (deckId) => {
+    const handleViewDeck = async () => {
+        const deckId = await handleSaveFlashcards();
+        if (!deckId) {
+            console.error('No deck ID available');
+            return;
+        }
         setIsSuccessModalOpen(false);
         router.push(`/flashcards/${deckId}`);
     };
@@ -272,7 +277,7 @@ export default function flashcards() {
     }
 
     return (
-        <main className='w-[100%] h-full pr-[1%]'>
+        <main className='w-[100%] h-auto min-h-screen pr-[1%]'>
             <div className='upper flex justify-between w-[100%] mb-[3%]'>
                 <div className='upper-left'>
                     <div className='flex items-end mb-[3%]'>
@@ -289,21 +294,21 @@ export default function flashcards() {
                     </button>
                 </div>
             </div>
-            <div className="lower flex justify-between w-[100%] h-[calc(100%-120px)]">
-                <div className="lower-left flex flex-col gap-[3%] w-[45%]">
-                    <div className=" lower-left-upper border border-solid border-[#09090B] rounded-lg w-[100%] h-[70%] px-[1%] py-[10%]">
+            <div className="lower flex justify-between w-[100%] pb-[7%]">
+                <div className="lower-left flex flex-col gap-[50px] w-[40%] mr-[3%] ml-[2%]">
+                    <div className=" lower-left-upper border border-solid border-[#27272A] rounded-lg w-[100%] h-[400px] overflow-y-auto custom-scrollbar px-[1%] py-[10%]">
 
                     </div>
-                    <div className="lower-left-lower border border-solid border-[#09090B] rounded-lg w-[100%] h[30%] px-[1%] py-[10%]">
-                        
+                    <div className="lower-left-lower border border-solid border-[#27272A] rounded-lg w-[100%] h-[200px] overflow-y-auto custom-scrollbar px-[1%] py-[10%]">
+
                     </div>
                 </div>
-                <div className="lower-right border-1 border-solid border-[#09090B] rounded-lg w-[55%] h-full px-[1%] py-[10%]">
+                <div className="lower-right border-1 border-solid border-[#27272A] rounded-lg w-[52%] h-[650px] verflow-y-auto custom-scrollbar ml-[3%] px-[1%] py-[10%]">
 
                 </div>
             </div>
-            <NewDeckModal 
-                isOpen={isModalOpen} 
+            <NewDeckModal
+                isOpen={isModalOpen}
                 onClose={() => {
                     console.log('Closing Modal'); //for debugging
                     setIsModalOpen(false)
@@ -326,7 +331,7 @@ export default function flashcards() {
                             <div className="grid grid-cols-3 gap-4 min-h-[79%] max-h-[80%] overflow-y-auto pb-20">
                                 {notes.map((note) => (
                                     <div key={note.id}
-                                        className={`relative px-4 pt-4 pb-2 h-[120px] rounded-lg border border-[#27272A] bg-[#09090B] hover:bg-black transition cursor-pointer overflow-hidden group`}
+                                        className={`relative px-4 pt-4 pb-2 h-[140px] rounded-lg border border-[#27272A] bg-[#09090B] hover:bg-black transition cursor-pointer overflow-hidden group`}
                                         onClick={() => handleNoteSelect(note.id)}>
                                         <h3 className="text-lg font-semibold text-white mb-1">{note.title}</h3>
                                         {/* Note Content with fade effect */}
@@ -377,10 +382,9 @@ export default function flashcards() {
             {/* Flashcard Success Modal */}
             <FlashcardSuccessModal
                 isOpen={isSuccessModalOpen}
-                onPreview={() => console.log("Preview flashcards")}
                 onSave={handleSaveFlashcards}
                 onCancel={handleCancel}
-                onView={() => handleViewDeck(generatedDeckId)}
+                onView={handleViewDeck}
             />
 
             {/* Cancel Confirmation Modal */}

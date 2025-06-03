@@ -266,11 +266,27 @@ html:not(.light-mode) .theme-card {
   background-color: rgba(155, 135, 245, 0.3) !important;
 }
 
-.perspective-1000 {
-    perspective: 1000px;
+//sliding animation when changing flashcards
+@keyframes slideLeft {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
 }
 
-.transform-style-3d {
+@keyframes slideRight {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+}
+
+.slide-left {
+    animation: slideLeft 0.5s ease-in-out;
+}
+
+.slide-right {
+    animation: slideRight 0.5s ease-in-out;
+}
+
+//flipping animations wehn flipping flashcard
+.transform-style-preserve-3d {
     transform-style: preserve-3d;
 }
 

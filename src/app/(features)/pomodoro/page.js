@@ -346,8 +346,8 @@ const validatePhoneNumber = (phone) => {
     };
 
     return (
-        <div className="flex h-100vh bg-[#09090B]">
-            <div className="m-10 pomodoro-timer w-[40%]  bg-[#09090B] border border-gray-500 rounded-2xl flex items-center flex-col px-6 py-12">
+        <div className="flex h-100vh ">
+            <div className="m-10 pomodoro-timer w-[40%] border border-gray-500 rounded-2xl flex items-center flex-col px-6 py-12">
                 <h2 className="font-semibold text-2xl">Pomodoro Timer</h2>
                 <p className="text-gray-400 mb-[20px]">Work in focused intervals for maximum productivity</p>
                 {isRunning && (
@@ -383,7 +383,8 @@ const validatePhoneNumber = (phone) => {
                 <div className="gray-outline-div border-[10px] border-[#27272A] w-[300px] h-[300px] rounded-full relative">
                     <div className="pink-outline-div absolute inset-0 border-[4px] border-[#FF6B9E] rounded-full flex items-center justify-center">
                         <div className="timer-display text-6xl text-white">
-                            {formatTime(timeInSeconds)}
+                            <h2 className="text-[#FF6B9E]">{formatTime(timeInSeconds)}</h2>
+                            
                         </div>
                     </div>
                 </div>
@@ -442,7 +443,7 @@ const validatePhoneNumber = (phone) => {
 
 
             {/* Accountability Partner Setup */}
-            <div className="accountability-setup m-10 w-[25%] bg-[#09090B] border border-gray-500 rounded-2xl flex flex-col items-center px-6 py-12">
+            <div className="accountability-setup m-10 w-[25%] border border-gray-500 rounded-2xl flex flex-col items-center px-6 py-12">
                 <h2 className="text-2xl font-semibold mb-2">Accountability Partner</h2>
                 <p className="text-gray-400 mb-6 text-center">Set up someone to keep you accountable during focus sessions</p>
                 
@@ -536,7 +537,7 @@ const validatePhoneNumber = (phone) => {
 
             
             {/* Check-in settings */}
-            <div className="check-in-settings m-10 w-[30%] min-h-[70%] bg-[#09090B] border border-gray-500 rounded-2xl flex flex-col items-center px-6 py-12">
+            <div className="check-in-settings m-10 w-[30%] min-h-[70%] border border-gray-500 rounded-2xl flex flex-col items-center px-6 py-12">
                 <h2 className="text-2xl font-semibold mb-2">Focus Check-ins</h2>
                 <p className="text-gray-400 mb-6 text-center">Select how many times you want to be checked on during your focus session</p>
                 

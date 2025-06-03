@@ -20,12 +20,6 @@ export const metadata = {
 
 export default function DashboardPage({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning={true} // that stupid hydration error, it will go away with this
-      >
-        
         <div className="flex h-screen">
           <Sidebar />
           <div className="flex-1 flex flex-col">
@@ -35,7 +29,5 @@ export default function DashboardPage({ children }) {
             <main className="px-[4%]">{children}</main>
           </div>
         </div>
-      </body>
-    </html>
   );
 }

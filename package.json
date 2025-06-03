@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.49.8",
+    "@supabase/supabase-js": "^2.49.9",
     "@tinymce/miniature": "^6.0.0",
     "@tinymce/tinymce-react": "^6.2.0",
     "clsx": "^2.1.1",
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "22.15.21",
     "@types/react": "19.1.5",

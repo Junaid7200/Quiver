@@ -1,0 +1,174 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Premium screen gradient -->
+    <linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8f9fa;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glossy effect -->
+    <linearGradient id="glossy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Text glow -->
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Premium shadow -->
+    <filter id="premiumShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#5222D0" flood-opacity="0.25"/>
+    </filter>
+    
+    <!-- Blur for depth -->
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+  
+  <!-- Black background -->
+  <rect width="800" height="600" fill="#000000"/>
+  
+  <!-- Floating UI elements in background -->
+  <!-- Floating navigation bars -->
+  <rect x="50" y="80" width="120" height="6" rx="3" fill="#5222D0" opacity="0.15" filter="url(#blur)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 15,-8; 0,0" dur="6s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="55" y="90" width="80" height="4" rx="2" fill="#EC615B" opacity="0.2" filter="url(#blur)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 12,-5; 0,0" dur="5s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Floating progress bars -->
+  <rect x="650" y="120" width="100" height="3" rx="2" fill="#5222D0" opacity="0.1" filter="url(#blur)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; -20,10; 0,0" dur="7s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="650" y="120" width="60" height="3" rx="2" fill="#EC615B" opacity="0.3" filter="url(#blur)">
+    <animate attributeName="width" values="60;85;60" dur="4s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0,0; -20,10; 0,0" dur="7s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Floating toggle switches -->
+  <rect x="100" y="480" width="40" height="20" rx="10" fill="#5222D0" opacity="0.15" filter="url(#blur)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 8,5; 0,0" dur="4s" repeatCount="indefinite"/>
+  </rect>
+  <circle cx="130" cy="490" r="8" fill="#EC615B" opacity="0.4" filter="url(#blur)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; -15,5; 0,0" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Main premium screen -->
+  <rect x="120" y="80" width="560" height="400" rx="32" ry="32" fill="url(#screenGradient)" stroke="#EC615B" stroke-width="3" filter="url(#premiumShadow)">
+    <animate attributeName="stroke-width" values="3;5;3" dur="3s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Screen inner bezel -->
+  <rect x="140" y="100" width="520" height="360" rx="20" ry="20" fill="white"/>
+  
+  <!-- Glossy overlay on screen -->
+  <rect x="140" y="100" width="520" height="180" rx="20" ry="20" fill="url(#glossy)"/>
+  
+  <!-- Modern UI header bar -->
+  <rect x="160" y="120" width="480" height="40" rx="8" fill="#f8f9fa"/>
+  <circle cx="180" cy="140" r="6" fill="#EC615B" opacity="0.8"/>
+  <circle cx="200" cy="140" r="6" fill="#5222D0" opacity="0.6"/>
+  <circle cx="220" cy="140" r="6" fill="#28a745" opacity="0.6"/>
+  
+  <!-- Animated menu dots -->
+  <circle cx="620" cy="140" r="2" fill="#5222D0" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="630" cy="140" r="2" fill="#5222D0" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="640" cy="140" r="2" fill="#5222D0" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- QUIVER text with premium styling -->
+  <text x="400" y="300" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="300" fill="#5222D0" filter="url(#textGlow)" letter-spacing="4px">
+    <animate attributeName="opacity" values="0;1" dur="2s" fill="freeze"/>
+    QUIVER
+  </text>
+  
+  <!-- Animated underline -->
+  <line x1="280" y1="320" x2="520" y2="320" stroke="#EC615B" stroke-width="2" opacity="0">
+    <animate attributeName="opacity" values="0;1" dur="1s" begin="2s" fill="freeze"/>
+    <animate attributeName="stroke-width" values="2;4;2" dur="2s" begin="3s" repeatCount="indefinite"/>
+  </line>
+  
+  <!-- Floating modern UI cards -->
+  <g opacity="0.8">
+    <rect x="30" y="200" width="60" height="80" rx="12" fill="white" stroke="#5222D0" stroke-width="1" filter="url(#premiumShadow)" opacity="0.9">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 10,-15; 0,0" dur="5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="40" y="220" width="40" height="2" rx="1" fill="#EC615B" opacity="0.6"/>
+    <rect x="40" y="230" width="30" height="2" rx="1" fill="#5222D0" opacity="0.4"/>
+    <rect x="40" y="240" width="35" height="2" rx="1" fill="#EC615B" opacity="0.5"/>
+    <circle cx="70" cy="255" r="8" fill="#5222D0" opacity="0.1"/>
+  </g>
+  
+  <g opacity="0.8">
+    <rect x="710" y="320" width="60" height="80" rx="12" fill="white" stroke="#EC615B" stroke-width="1" filter="url(#premiumShadow)" opacity="0.9">
+      <animateTransform attributeName="transform" type="translate" values="0,0; -15,8; 0,0" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="720" y="340" width="40" height="2" rx="1" fill="#5222D0" opacity="0.6"/>
+    <rect x="720" y="350" width="25" height="2" rx="1" fill="#EC615B" opacity="0.4"/>
+    <rect x="720" y="360" width="30" height="2" rx="1" fill="#5222D0" opacity="0.5"/>
+    <circle cx="740" cy="380" r="6" fill="#EC615B" opacity="0.2"/>
+  </g>
+  
+  <!-- Animated data visualization elements -->
+  <g opacity="0.6">
+    <rect x="160" y="360" width="4" height="20" fill="#5222D0" opacity="0.3">
+      <animate attributeName="height" values="20;35;20" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="170" y="360" width="4" height="30" fill="#EC615B" opacity="0.4">
+      <animate attributeName="height" values="30;15;30" dur="2.5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="180" y="360" width="4" height="25" fill="#5222D0" opacity="0.3">
+      <animate attributeName="height" values="25;40;25" dur="3.5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="190" y="360" width="4" height="35" fill="#EC615B" opacity="0.4">
+      <animate attributeName="height" values="35;20;35" dur="2.8s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+  
+  <!-- Pulsing connection lines -->
+  <path d="M400,350 Q450,380 500,350" stroke="#5222D0" stroke-width="1" fill="none" opacity="0.3">
+    <animate attributeName="stroke-width" values="1;3;1" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.7;0.3" dur="4s" repeatCount="indefinite"/>
+  </path>
+  
+  <path d="M300,350 Q250,320 200,350" stroke="#EC615B" stroke-width="1" fill="none" opacity="0.3">
+    <animate attributeName="stroke-width" values="1;3;1" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Modern loading dots -->
+  <circle cx="580" cy="380" r="3" fill="#EC615B" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="590" cy="380" r="3" fill="#EC615B" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" begin="0.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="380" r="3" fill="#EC615B" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" begin="0.4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Floating particles with trails -->
+  <circle cx="250" cy="150" r="2" fill="#5222D0" opacity="0.6">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 100,-30; 200,-60" dur="8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0.1;0.6" dur="8s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="550" cy="450" r="1.5" fill="#EC615B" opacity="0.7">
+    <animateTransform attributeName="transform" type="translate" values="0,0; -80,20; -160,40" dur="6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0.1;0.7" dur="6s" repeatCount="indefinite"/>
+  </circle>
+</svg>

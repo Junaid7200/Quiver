@@ -20,11 +20,6 @@ export const metadata = {
 
 export default function FeaturesPage({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning={true} // that stupid hydration error, it will go away with this
-      >
         
         <div className="flex h-screen">
           <Sidebar />
@@ -35,7 +30,5 @@ export default function FeaturesPage({ children }) {
             <main className="mt-[2%] px-[4%] flex-1 overflow-auto custom-scrollbar">{children}</main>
           </div>
         </div>
-      </body>
-    </html>
   );
 }

@@ -51,17 +51,33 @@ export default function bleh() {
     return (
         <main className="min-h-screen w-[100%] mt-[3%] bg-[#09090B]">
             <p className='text-4xl pb-[1%]'>Welcome back, {name}!</p>
-            <p className="text-[#A1A1AA] mb-[2%]">Track your learning progress and continue where you left off.</p>
-            <article>
-                <div className="left border border-solid border-[#27272A] rounded-lg w-[70%] py-[2%] px-[3%]">
-                    <div className="heading flex items-stretch mb-[1%]">
-                        <Image src='/Assets/progress.svg' width={25} height={25} alt='progress' className="mr-[2%]"></Image>
-                        <p className="text-2xl">Study Progress</p>
-                    </div>
-                    <p className="text-[#A1A1AA]">Your weekly progress across all subjects</p>
-                </div>
-                <div className="right">
+            <p className="text-[#A1A1AA] mb-[2%] text-md">Track your learning progress and continue where you left off.</p>
+            <article className="w-full overflow-y-auto custom-scrollbar flex flex-col px-[3%]">
+                <div className="upper flex gap-[6%] mb-20">
+                    <div className="upper-left border border-[#27272A] rounded-xl w-[50%] min-h-[400px]">
+                        <div className="heading1">
 
+                        </div>
+                        <div className="content1">
+
+                        </div>
+                    </div>
+                    <div className="upper-right border border-[#27272A] rounded-xl w-[40%] min-h-[400px]">
+                        <div className="heading2">
+
+                        </div>
+                        <div className="content2">
+
+                        </div>
+                    </div>
+                </div>
+                <div className="lower border border-[#27272A] rounded-xl w-[100%] min-h-[300px]">
+                    <div className="heading3">
+                            
+                    </div>
+                    <div className="content3">
+
+                    </div>
                 </div>
             </article>
         </main>

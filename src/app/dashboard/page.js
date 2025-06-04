@@ -49,7 +49,7 @@ export default function bleh() {
 
 
     return (
-        <main className="min-h-screen w-[100%] mt-[3%]">
+        <main className="min-h-screen w-[100%] mt-[3%] bg-[#09090B]">
             <p className='text-4xl pb-[1%]'>Welcome back, {name}!</p>
             <p className="text-[#A1A1AA] mb-[2%]">Track your learning progress and continue where you left off.</p>
             <article>

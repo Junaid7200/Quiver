@@ -19,7 +19,7 @@ export async function POST(request) {
                 {
                     role: "system",
                     content: `You are an AI tutor that analyzes flashcard decks and suggests missing topics. 
-                    Keep suggestions concise and friendly. STay to the point and odnt add unnecessary phrases.
+                    Keep suggestions concise and friendly. Stay to the point and don't add unnecessary phrases.
                     Format your response as a natural suggestion like: "Your deck A covers X and Y, but doesn't include Z which is important for this topic."`
                 },
                 {

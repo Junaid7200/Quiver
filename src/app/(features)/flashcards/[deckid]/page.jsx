@@ -226,7 +226,9 @@ export default function FlashcardPage({ params }) {
     const updateDeckProgress = async () => {
         try {
             const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
 
+            // Adding current card to viewed cards
             setViewedCards(prev => new Set(prev).add(currentIndex));
 
             const totalCards = flashcards.length;
@@ -240,7 +242,8 @@ export default function FlashcardPage({ params }) {
                 currentIndex
             });
 
-            const { error } = await supabase
+            // Update deck progress
+            const { error: deckError } = await supabase
                 .from('flashcard_decks')
                 .update({
                     last_viewed_at: new Date().toISOString(),
@@ -250,9 +253,40 @@ export default function FlashcardPage({ params }) {
                 })
                 .eq('id', deckId);
 
-            if (error) throw error;
+            if (deckError) throw deckError;
+
+            // Update activity tracking
+            const today = new Date().toISOString().split('T')[0];
+
+            // Check for existing activity today
+            const { data: existing } = await supabase
+                .from('flashcard_activity')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('date', today)
+                .single();
+
+            if (existing) {
+                // Update existing activity
+                await supabase
+                    .from('flashcard_activity')
+                    .update({
+                        cards_studied: existing.cards_studied + 1
+                    })
+                    .eq('id', existing.id);
+            } else {
+                // Create new activity entry
+                await supabase
+                    .from('flashcard_activity')
+                    .insert({
+                        user_id: user.id,
+                        date: today,
+                        cards_studied: 1
+                    });
+            }
+
         } catch (error) {
-            console.error('Error updating deck progress:', error);
+            console.error('Error updating progress:', error);
         }
     };
 

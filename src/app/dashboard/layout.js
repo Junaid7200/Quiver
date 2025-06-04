@@ -20,13 +20,13 @@ export const metadata = {
 
 export default function DashboardPage({ children }) {
   return (
-        <div className="flex h-screen">
+        <div className="flex h-screen bg-[#09090B]">
           <Sidebar />
-          <div className="flex-1 flex flex-col">
-            <div className="flex justify-end pt-[1%] pr-[2%]">
+          <div className="flex-1 flex flex-col bg-[#09090B]">
+            <div className="flex justify-end pt-[1%] pr-[2%] bg-[#09090B]">
               <NavBar />
             </div>
-            <main className="px-[4%]">{children}</main>
+            <main className="px-[4%] bg-[#09090B]">{children}</main>
           </div>
         </div>
   );

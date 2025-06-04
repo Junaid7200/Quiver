@@ -8,6 +8,7 @@ import { createClient } from '../../../utils/supabase/client'
 import { useRouter } from 'next/navigation';
 import FlashcardSuccessModal from '../../components/FlashcardSuccessModal';
 import CancelNewdeckModal from '../../components/CancelNewdeckModal';
+import ActivityHeatmap from '../../components/ActivityHeatmap';
 
 export default function flashcards() {
 
@@ -25,6 +26,7 @@ export default function flashcards() {
     const [loadingDecks, setLoadingDecks] = useState(true);
     const [currentSuggestion, setCurrentSuggestion] = useState(null);
     const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+    const [activityData, setActivityData] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -51,6 +53,32 @@ export default function flashcards() {
         };
 
         fetchDecks();
+    }, []);
+
+    useEffect(() => {
+        const fetchActivity = async () => {
+            try {
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
+
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+                const { data, error } = await supabase
+                    .from('flashcard_activity')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .gte('date', thirtyDaysAgo.toISOString())
+                    .order('date', { ascending: true });
+
+                if (error) throw error;
+                setActivityData(data);
+            } catch (error) {
+                console.error('Error fetching activity:', error);
+            }
+        };
+
+        fetchActivity();
     }, []);
 
     const generateSuggestion = async () => {
@@ -100,7 +128,7 @@ export default function flashcards() {
                 deckName: selectedDeck.name,
                 message: data.suggestion
             });
-            
+
         } catch (error) {
             console.error('Error generating suggestion:', error);
             setCurrentSuggestion({
@@ -396,10 +424,10 @@ export default function flashcards() {
             </div>
             <div className="lower flex justify-between w-[100%] pb-[7%]">
                 <div className="lower-left flex flex-col gap-[50px] w-[40%] mr-[3%] ml-[2%]">
-                    <div className=" lower-left-upper border border-solid border-[#27272A] rounded-lg w-[100%] h-[400px] overflow-y-auto px-[1%] py-[10%]">
-
+                    <div className="lower-left-upper border border-solid border-[#27272A] rounded-lg w-[100%] h-[468px] overflow-hidden">
+                        <ActivityHeatmap activity={activityData} />
                     </div>
-                    <div className="lower-left-lower border border-solid border-[#27272A] rounded-lg w-[100%] h-[240px] overflow-hidden">
+                    <div className="lower-left-lower border border-solid border-[#27272A] rounded-lg w-[100%] h-[260px] overflow-hidden">
                         {/* Header Section */}
                         <div className="border-b border-[#27272A]">
                             <div className="flex items-center gap-4 px-6 py-4">
@@ -412,8 +440,8 @@ export default function flashcards() {
                                     />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-1">AI Suggestions</h2>
-                                    <p className="text-sm text-[#A1A1AA]">Improve your flashcard decks</p>
+                                    <h2 className="text-3xl mb-1">AI Suggestions</h2>
+                                    <p className="text-md text-[#A1A1AA]">Improve your flashcard decks</p>
                                 </div>
                             </div>
                         </div>
@@ -429,7 +457,7 @@ export default function flashcards() {
 
                                         <div>
                                             {currentSuggestion.deckName && (
-                                                <p className="text-sm text-[#32E0C4] mb-2">
+                                                <p className="text-lg text-[#32E0C4] mb-2">
                                                     Regarding "{currentSuggestion.deckName}"
                                                 </p>
                                             )}
@@ -458,103 +486,120 @@ export default function flashcards() {
                         </div>
                     </div>
                 </div>
-                <div className="lower-right border-1 border-solid border-[#27272A] rounded-lg w-[69%] h-[690px] ml-[3%] px-[2%] py-[2%]">
-                    <div className="pb-6">
-                        <div className="mb-6">
-                            <p className="text-3xl mb-[1%]">Your Flashcard Decks</p>
-                            <p className="text-md text-[#A1A1AA]">Track your learning progress</p>
-                        </div>
-                        {/* Filter Buttons */}
-                        <div className="flex gap-4 p-1 bg-[#27272A] rounded-2xl w-[62%]">
-                            <button
-                                onClick={() => setFilterType('all')}
-                                className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'all'
-                                    ? 'bg-[#09090B] text-white'
-                                    : 'text-[#A1A1AA] hover:text-white'
-                                    }`}
-                            >
-                                All Decks
-                            </button>
-                            <button
-                                onClick={() => setFilterType('completed')}
-                                className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'completed'
-                                    ? 'bg-[#09090B] text-white'
-                                    : 'text-[#A1A1AA] hover:text-white'
-                                    }`}
-                            >
-                                Completed
-                            </button>
-                            <button
-                                onClick={() => setFilterType('incomplete')}
-                                className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'incomplete'
-                                    ? 'bg-[#09090B] text-white'
-                                    : 'text-[#A1A1AA] hover:text-white'
-                                    }`}
-                            >
-                                Incomplete
-                            </button>
-                        </div>
-                    </div>
+                <div className="lower-right border-1 border-solid border-[#27272A] rounded-lg w-[69%] h-[778px] ml-[3%] flex flex-col">
+                    <div className='flex-1 overflow-hidden'>
+                        <div className="pb-6 h-full flex flex-col">
+                            <div className="border-b border-[#27272A] mb-2">
+                                <div className="flex items-center gap-4 px-6 py-6">
+                                    <div className="bg-[#09090B] rounded-lg p-2">
+                                        <Image
+                                            src="/Assets/decks-icon.svg"
+                                            width={35}
+                                            height={35}
+                                            alt="AI"
+                                        />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-3xl mb-[1%]">Your Flashcard Decks</h2>
+                                        <p className="text-md text-[#A1A1AA]">Track your learning progress</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                    {/* Decks List */}
-                    <div className="overflow-y-auto h-[calc(100%-140px)] p-4 pt-2 custom-scrollbar">
-                        {loadingDecks ? (
-                            <div className="flex justify-center items-center h-full">
-                                <Spinner />
+                            <div className='px-[5%] py-[2%]'>
+                                {/* Filter Buttons */}
+                                <div className="flex gap-4 p-1 bg-[#27272A] rounded-2xl w-[68S%]">
+                                    <button
+                                        onClick={() => setFilterType('all')}
+                                        className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'all'
+                                            ? 'bg-[#09090B] text-white'
+                                            : 'text-[#A1A1AA] hover:text-white'
+                                            }`}
+                                    >
+                                        All Decks
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterType('completed')}
+                                        className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'completed'
+                                            ? 'bg-[#09090B] text-white'
+                                            : 'text-[#A1A1AA] hover:text-white'
+                                            }`}
+                                    >
+                                        Completed
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterType('incomplete')}
+                                        className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'incomplete'
+                                            ? 'bg-[#09090B] text-white'
+                                            : 'text-[#A1A1AA] hover:text-white'
+                                            }`}
+                                    >
+                                        Incomplete
+                                    </button>
+                                </div>
                             </div>
-                        ) : decks.length === 0 ? (
-                            <div className="flex justify-center items-center h-full text-[#A1A1AA]">
-                                No flashcard decks found
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                {decks
-                                    .filter(deck => {
-                                        if (filterType === 'completed') return deck.progress_percentage === 100;
-                                        if (filterType === 'incomplete') return deck.progress_percentage < 100;
-                                        return true;
-                                    })
-                                    .map(deck => (
-                                        <div
-                                            key={deck.id}
-                                            className="px-4 py-4 rounded-3xl bg-[#27272A] border-l-7 border-[#32E0C4] hover:bg-black transition"
-                                        >
-                                            <div className="flex justify-between items-start mb-2">
-                                                <h3 className="text-xl text-white">{deck.name}</h3>
-                                                <span className="text-sm text-[#A1A1AA]">
-                                                    {deck.flashcards[0].count} cards
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className="text-md text-white">Progress</span>
-                                                <span className="text-sm text-white">
-                                                    {deck.progress_percentage}%
-                                                </span>
-                                            </div>
-                                            <div className="w-full bg-[#27272A] rounded-full h-1.5 mb-4">
+
+                            {/* Decks List */}
+                            <div className="flex-1 overflow-y-auto py-4 px-[5%] pt-2 custom-scrollbar">
+                                {loadingDecks ? (
+                                    <div className="flex justify-center items-center h-full">
+                                        <Spinner />
+                                    </div>
+                                ) : decks.length === 0 ? (
+                                    <div className="flex justify-center items-center h-full text-[#A1A1AA]">
+                                        No flashcard decks found
+                                    </div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {decks
+                                            .filter(deck => {
+                                                if (filterType === 'completed') return deck.progress_percentage === 100;
+                                                if (filterType === 'incomplete') return deck.progress_percentage < 100;
+                                                return true;
+                                            })
+                                            .map(deck => (
                                                 <div
-                                                    className="bg-[#32E0C4] h-1.5 rounded-full transition-all duration-300 "
-                                                    style={{ width: `${deck.progress_percentage}%` }}
-                                                />
-                                            </div>
-                                            <div className="flex justify-end gap-4">
-                                                <button
-                                                    onClick={() => router.push(`/flashcards/${deck.id}`)}
-                                                    className="px-6 py-2 text-white hover:text-white transition-colors  border border-[#32E0C4]  rounded-2xl"
+                                                    key={deck.id}
+                                                    className="px-4 py-4 rounded-3xl bg-[#27272A] border-l-7 border-[#32E0C4] hover:bg-black transition"
                                                 >
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    onClick={() => router.push(`/flashcards/${deck.id}`)}
-                                                    className="px-4 py-2 bg-[#32E0C4] text-black rounded-2xl hover:bg-opacity-90 transition-colors"
-                                                >
-                                                    Practice
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <h3 className="text-xl text-white">{deck.name}</h3>
+                                                        <span className="text-sm text-[#A1A1AA]">
+                                                            {deck.flashcards[0].count} cards
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <span className="text-md text-white">Progress</span>
+                                                        <span className="text-sm text-white">
+                                                            {deck.progress_percentage}%
+                                                        </span>
+                                                    </div>
+                                                    <div className="w-full bg-[#27272A] rounded-full h-1.5 mb-4">
+                                                        <div
+                                                            className="bg-[#32E0C4] h-1.5 rounded-full transition-all duration-300 "
+                                                            style={{ width: `${deck.progress_percentage}%` }}
+                                                        />
+                                                    </div>
+                                                    <div className="flex justify-end gap-4">
+                                                        <button
+                                                            onClick={() => router.push(`/flashcards/${deck.id}`)}
+                                                            className="px-6 py-2 text-white hover:text-white transition-colors  border border-[#32E0C4]  rounded-2xl"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => router.push(`/flashcards/${deck.id}`)}
+                                                            className="px-4 py-2 bg-[#32E0C4] text-black rounded-2xl hover:bg-opacity-90 transition-colors"
+                                                        >
+                                                            Practice
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
             </div>

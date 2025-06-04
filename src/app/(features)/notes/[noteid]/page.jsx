@@ -544,46 +544,6 @@ const truncateForApi = (content, maxChars = 6000) => {
   }}
 />
 
-
-
-
-
-      {/* <Editor
-        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-        onInit={(evt, editor) => editorRef.current = editor}
-        initialValue={note.content}
-        value={note.content}
-        onEditorChange={handleContentChange}
-        init={{
-          height: 500,
-          menubar: false,
-          skin: 'oxide-dark',
-          content_css: 'dark',
-          directionality: 'ltr',
-          plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'charmap',
-            'searchreplace', 'visualblocks', 'code',
-            'insertdatetime', 'table', 'wordcount'
-          ],
-          toolbar: 'undo redo | formatselect | ' +
-          'bold italic underline | h1 h2 h3 | ' +
-          'bullist numlist outdent indent | ' +
-          'link | removeformat',
-          content_style: `
-            body { 
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-              font-size: 16px;
-              color: #fff;
-              background-color: #1E1E1E;
-              padding: 10px;
-              direction: ltr;
-            }
-            h1, h2, h3 { color: #fff; }
-            p { margin: 0; padding: 0; }
-            a { color: #9B87F5; }
-          `,
-        }}
-      /> */}
     </div>
   )}
 </div>

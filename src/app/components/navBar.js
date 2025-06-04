@@ -71,7 +71,7 @@ export default function NavBar() {
     };
 
     return (
-        <div className="w-[15%] flex justify-end bg-[#09090B]">
+        <div className="w-[15%] flex justify-end">
             <button 
                 onClick={toggleTheme} 
                 className='light-dark-mode-button pr-[22px] transition-transform hover:scale-110'

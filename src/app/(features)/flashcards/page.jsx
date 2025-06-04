@@ -364,46 +364,54 @@ export default function flashcards() {
     };
 
     // function for Grok API integration
-    async function generateFlashcardsFromNote(noteContent) {
-        try {
-            if (!noteContent) {
-                throw new Error('Note content is required');
-            }
-
-            const plainTextContent = stripHtmlButPreserveStructure(noteContent);
-
-            console.log('Sending note content to API:', plainTextContent.substring(0, 100) + '...'); // Debug log
-
-            const response = await fetch('/api/flashcards', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ content: plainTextContent }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('API Error:', errorData); // Debug log
-                throw new Error(errorData.error || 'Failed to generate flashcards');
-            }
-
-            const data = await response.json();
-
-            if (!data.flashcards || !Array.isArray(data.flashcards)) {
-                console.error('Invalid response format:', data); // Debug log
-                throw new Error('Invalid flashcard data received');
-            }
-
-            console.log('Generated flashcards:', data.flashcards); // Debug log
-            return data.flashcards;
-
-        } catch (error) {
-            console.error('Error in generateFlashcardsFromNote:', error);
-            throw error; // Re-throw to be handled by the calling function
-        }
+async function generateFlashcardsFromNote(noteContent) {
+  try {
+    if (!noteContent) {
+      throw new Error('Note content is required');
     }
 
+    const plainTextContent = stripHtmlButPreserveStructure(noteContent);
+    
+    // Limit content length if needed
+    const truncatedContent = plainTextContent.length > 4000 
+      ? plainTextContent.substring(0, 4000) + "..." 
+      : plainTextContent;
+
+    console.log('Sending note content to API:', truncatedContent.substring(0, 100) + '...'); // Debug log
+
+    const response = await fetch('/api/flashcards', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content: truncatedContent }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('API Error:', errorData); // Debug log
+      throw new Error(errorData.error || 'Failed to generate flashcards');
+    }
+
+    const data = await response.json();
+
+    if (!data.flashcards || !Array.isArray(data.flashcards)) {
+      console.error('Invalid response format:', data); // Debug log
+      throw new Error('Invalid flashcard data received');
+    }
+    
+    if (data.flashcards.length === 0) {
+      throw new Error('No flashcards were generated');
+    }
+
+    console.log('Generated flashcards:', data.flashcards); // Debug log
+    return data.flashcards;
+
+  } catch (error) {
+    console.error('Error in generateFlashcardsFromNote:', error);
+    throw error; // Re-throw to be handled by the calling function
+  }
+}
     return (
         <main className='w-[100%] h-auto min-h-screen pr-[1%] bg-[#09090B]'>
             <div className='upper flex justify-between w-[100%] mb-[3%]'>

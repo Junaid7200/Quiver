@@ -72,11 +72,11 @@ const ActivityHeatmap = ({ activity }) => {
                         <div className="space-y-2">
                             <div className="flex gap-2">
                                 <div className="w-8" /> {/* Empty space for month alignment */}
-                                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                                    <div key={day} className="w-10 text-center text-md text-[#A1A1AA]">
-                                        {day}
-                                    </div>
-                                ))}
+                              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+                              <div key={`${day}-${index}`} className="w-10 text-center text-md text-[#A1A1AA]">
+                                {day}
+                              </div>
+                            ))}
                             </div>
 
                             {/* Weeks */}

@@ -14,7 +14,7 @@ export default function Sidebar() {
         { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
         { name: 'Notes', path: '/notes', icon: 'notes' },
         { name: 'Flashcards', path: '/flashcards', icon: 'flashcards' },
-        { name: 'Quizzes', path: '/quizzes', icon: 'quizzes' },
+        { name: 'Quizzes', path: '/not-found', icon: 'quizzes' },
         { name: 'Pomodoro', path: '/pomodoro', icon: 'pomodoro' }
     ];
 

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiver - Project Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #5222D0 0%, #5222D0 100%);
+            color: white;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #09090B 0%, #131218 50%, #1A1830 100%);
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow-y: auto; /* Allow scrolling if needed */
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #9B87F5, #5222D0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            color: #9B87F5;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            opacity: 0.9;
+        }
+
+        .slide p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-bottom: 20px;
+            opacity: 0.85;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            margin-bottom: 40px;
+        }
+
+        .team-info {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .team-member {
+            font-size: 1.3rem;
+            margin: 10px 0;
+            color: #ffffff;
+        }
+
+        .screenshot-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 900px;
+            width: 100%;
+            height: 320px; /* Adjusted height for better fit */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Prevents content from spilling out */
+        }
+
+        .screenshot-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain; /* Ensures image is fully visible */
+            border-radius: 8px;
+        }
+
+        .screenshot-placeholder {
+            width: 100%;
+            height: 100%;
+            border: 2px dashed rgba(255,255,255,0.4);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.6);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            background: rgba(155, 135, 245, 0.8);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .control-btn:hover {
+            background: rgba(155, 135, 245, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 135, 245, 0.4);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-indicator {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 1000;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            max-width: 1000px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: left;
+        }
+
+        .feature-card h4 {
+            color: #9B87F5;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .tech-item {
+            background: rgba(155, 135, 245, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(155, 135, 245, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Animation for slide transitions */
+        .slide {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active">
+            <h1>Quiver</h1>
+            <p class="subtitle">A Comprehensive Web Application for Enhanced Academic Learning</p>
+            <div class="team-info">
+                <h3>Submitted By:</h3>
+                <div class="team-member">Syed Junaid Jaffery (22-NTU-CS-1167)</div>
+                <div class="team-member">Hadiah Iftikhar (22-NTU-CS-1159)</div>
+                <div class="team-member">Section: CS-6-A</div>
+                <br>
+                <div class="team-member">Submitted To: Sir Zahid Javed</div>
+                <div class="team-member">Web Application Development</div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Landing Page -->
+        <div class="slide">
+            <h2>Landing Page</h2>
+            <p>The first impression of Quiver - a clean, minimalistic design that welcomes users with clear navigation and compelling call-to-action buttons.</p>
+            <div class="screenshot-container">
+                <img src="images/landingpage.png" alt="Landing Page Screenshot">
+            </div>
+            <p>Features intuitive navigation and introduces users to Quiver's core value proposition.</p>
+        </div>
+
+        <!-- Slide 3: About Page -->
+        <div class="slide">
+            <h2>About Page</h2>
+            <p>Comprehensive overview of Quiver's mission, features, and benefits for academic productivity.</p>
+            <div class="screenshot-container">
+                <img src="images/aboutpage.png" alt="About Page Screenshot">
+            </div>
+            <p>Highlights the integration of note-taking, flashcards, and Pomodoro technique for enhanced learning.</p>
+        </div>
+
+        <!-- Slide 4: Signup Page -->
+        <div class="slide">
+            <h2>User Registration</h2>
+            <p>Secure and user-friendly signup process with multiple authentication options.</p>
+            <div class="screenshot-container">
+                <img src="images/signup (2).png" alt="Signup Page Screenshot">
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>Email Authentication</h4>
+                    <p>Traditional signup with validation</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Social Login</h4>
+                    <p>Google and GitHub integration</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Login Page -->
+        <div class="slide">
+            <h2>User Authentication</h2>
+            <p>Streamlined login process ensuring secure access to personal study materials.</p>
+            <div class="screenshot-container">
+                <img src="images/login.png" alt="Login Page Screenshot">
+            </div>
+            <p>Multiple authentication methods including social login for enhanced user convenience.</p>
+        </div>
+
+        <!-- Slide 6: Terms and Conditions -->
+        <div class="slide">
+            <h2>Terms & Conditions</h2>
+            <p>Transparent legal framework ensuring user rights and platform responsibilities.</p>
+            <div class="screenshot-container">
+                <img src="images/termsandconditions.png" alt="Terms Page Screenshot">
+            </div>
+            <p>Clear communication of user agreements and privacy policies.</p>
+        </div>
+
+        <!-- Slide 7: Forgot Password -->
+        <div class="slide">
+            <h2>Password Recovery</h2>
+            <p>Secure password reset functionality with email verification.</p>
+            <div class="screenshot-container">
+                <img src="images/forgotpassword.png" alt="Forgot Password Screenshot">
+            </div>
+            <p>Simple and secure process to regain account access through email verification.</p>
+        </div>
+
+        <!-- Slide 8: Dashboard -->
+        <div class="slide">
+            <h2>User Dashboard</h2>
+            <p>Central hub providing quick access to all Quiver features and recent activity.</p>
+            <div class="screenshot-container">
+                <div class="screenshot-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="9" y1="21" x2="9" y2="9"></line>
+                    </svg>
+                    <p style="margin-top: 15px; font-size: 1.2rem;">Dashboard Image Coming Soon</p>
+                </div>
+            </div>
+            <p>Personalized overview of notes, flashcards, and study progress.</p>
+        </div>
+
+        <!-- Slide 9: Account Management -->
+        <div class="slide">
+            <h2>Account Management</h2>
+            <p>Comprehensive profile management with secure data handling.</p>
+            <div class="screenshot-container">
+                <img src="images/profile.png" alt="Account Page Screenshot">
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>Profile Updates</h4>
+                    <p>Name, email, username changes</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Security</h4>
+                    <p>Password management and account deletion</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Settings -->
+        <div class="slide">
+            <h2>User Settings</h2>
+            <p>Customizable preferences for a personalized learning experience.</p>
+            <div class="screenshot-container">
+                <img src="images/settings.png" alt="Settings Page Screenshot">
+            </div>
+            <p>Theme preferences, notifications, and privacy controls for optimal user experience.</p>
+        </div>
+
+        <!-- Slide 11: Notes Overview -->
+        <div class="slide">
+            <h2>Notes Management</h2>
+            <p>Powerful note organization with folders, tags, and AI enhancements.</p>
+            <div class="screenshot-container">
+                <img src="images/notes.png" alt="Notes Page Screenshot">
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>Organization</h4>
+                    <p>Folders and tagging system</p>
+                </div>
+                <div class="feature-card">
+                    <h4>AI Features</h4>
+                    <p>Summarization and link suggestions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Note Editor -->
+        <div class="slide">
+            <h2>Rich Text Editor</h2>
+            <p>Advanced note editing with TinyMCE integration and AI-powered enhancements.</p>
+            <div class="screenshot-container">
+                <img src="images/innernoteid.png" alt="Note Editor Screenshot">
+            </div>
+            <div class="tech-stack">
+                <div class="tech-item">Rich Text Formatting</div>
+                <div class="tech-item">Auto-Save</div>
+                <div class="tech-item">AI Summarization</div>
+                <div class="tech-item">Link Suggestions</div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Flashcards Overview -->
+        <div class="slide">
+            <h2>Flashcards System</h2>
+            <p>Active recall learning through AI-generated and manual flashcard creation.</p>
+            <div class="screenshot-container">
+                <img src="images/flashcarddashboard.png" alt="Flashcards Page Screenshot">
+            </div>
+            <p>Organized deck management with progress tracking and spaced repetition principles.</p>
+        </div>
+
+        <!-- Slide 14: Flashcard Creation -->
+        <div class="slide">
+            <h2>AI-Powered Flashcard Generation</h2>
+            <p>Automatic flashcard creation from notes using Llama3-70b-8192 model via Grok API.</p>
+            <div class="screenshot-container">
+                <img src="images/flashcard.png" alt="Flashcard Creation Screenshot">
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>AI Generation</h4>
+                    <p>Smart question-answer pairs from notes</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Customization</h4>
+                    <p>Edit and refine generated content</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Flashcard Study -->
+        <div class="slide">
+            <h2>Study Interface</h2>
+            <p>Focused flashcard practice environment implementing active recall methodology.</p>
+            <div class="screenshot-container">
+                <img src="images/innerflashcard.png" alt="Flashcard Study Screenshot">
+            </div>
+            <p>Clean, distraction-free interface optimized for effective knowledge retention.</p>
+        </div>
+
+        <!-- Slide 16: Pomodoro Timer -->
+        <div class="slide">
+            <h2>Pomodoro Technique</h2>
+            <p>Scientific time management with accountability features and WhatsApp integration.</p>
+            <div class="screenshot-container">
+                <img src="images/pomodoro.png" alt="Pomodoro Page Screenshot">
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>Customizable Timers</h4>
+                    <p>Focus, short break, long break intervals</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Accountability</h4>
+                    <p>WhatsApp notifications to study partners</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Technology Stack -->
+        <div class="slide">
+            <h2>Technology Stack</h2>
+            <p>Modern web technologies ensuring performance, security, and scalability.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>Frontend</h4>
+                    <p>Next.js 13, React, Tailwind CSS</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Backend</h4>
+                    <p>Supabase (PostgreSQL, Auth)</p>
+                </div>
+                <div class="feature-card">
+                    <h4>AI Integration</h4>
+                    <p>Grok API with Llama3-70b-8192</p>
+                </div>
+                <div class="feature-card">
+                    <h4>External APIs</h4>
+                    <p>TinyMCE Editor, Twilio WhatsApp</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Thank You & Q&A -->
+        <div class="slide">
+            <h2>Thank You!</h2>
+            <div style="margin: 40px 0;">
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#9B87F5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 30px;">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                </svg>
+                <h3 style="margin-bottom: 20px; font-size: 2.2rem; background: linear-gradient(45deg, #9B87F5, #5222D0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Questions & Answers</h3>
+                <p style="font-size: 1.5rem; max-width: 800px; opacity: 0.9; margin: 20px auto;">We appreciate your attention and welcome any questions about Quiver.</p>
+            </div>
+            <div class="team-info" style="margin-top: 40px; padding: 20px 40px;">
+                <div class="team-member">Syed Junaid Jaffery (22-NTU-CS-1167)</div>
+                <div class="team-member">Hadiah Iftikhar (22-NTU-CS-1159)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <!-- <div class="controls">
+        <button class="control-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button class="control-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div> -->
+
+    <!-- Slide Indicator -->
+    <div class="slide-indicator">
+        <span id="slideInfo">1 / 18</span>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            // Update slide indicator
+            document.getElementById('slideInfo').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(n) {
+            if (currentSlide + n >= 0 && currentSlide + n < totalSlides) {
+                showSlide(currentSlide + n);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') showSlide(0);
+            if (e.key === 'End') showSlide(totalSlides - 1);
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

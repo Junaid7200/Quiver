@@ -30,6 +30,7 @@ export default function FlashcardPage({ params }) {
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [isUnsavedWarningOpen, setIsUnsavedWarningOpen] = useState(false)
     const [intendedDirection, setIntendedDirection] = useState(null);
+    const [viewedCards, setViewedCards] = useState(new Set());
 
     const currentFlashcard = flashcards[currentIndex]
 
@@ -42,17 +43,33 @@ export default function FlashcardPage({ params }) {
                     throw new Error('Invalid deck ID');
                 }
 
-                const { data: cards, error } = await supabase
+                //fetching flashcards
+                const { data: cards, error: cardsError } = await supabase
                     .from('flashcards')
                     .select('*')
-                    .eq('deck_id', deckId)
+                    .eq('deck_id', deckId);
 
-                if (error) throw error
+                if (cardsError) throw cardsError;
+
+                // Fetching deck progress
+                const { data: deck, error: deckError } = await supabase
+                    .from('flashcard_decks')
+                    .select('total_cards_viewed, last_viewed_card_index')
+                    .eq('id', deckId)
+                    .single();
+
                 if (cards && cards.length > 0) {
-                    setFlashcards(cards)
-                }
-                else {
-                    setError('No flashcards found in this deck')
+                    setFlashcards(cards);
+                    // Initializing viewed cards from saved progress
+                    if (deck.total_cards_viewed > 0) {
+                        const viewed = new Set();
+                        for (let i = 0; i <= deck.last_viewed_card_index; i++) {
+                            viewed.add(i);
+                        }
+                        setViewedCards(viewed);
+                    }
+                } else {
+                    setError('No flashcards found in this deck');
                 }
             } catch (error) {
                 console.error('Error fetching flashcards:', error)
@@ -87,9 +104,10 @@ export default function FlashcardPage({ params }) {
             setIsUnsavedWarningOpen(true);
             return
         }
-        setIsFlipped(false)
-        setSlideDirection('left')
-        setCurrentIndex(prev => (prev + 1) % flashcards.length)
+        setIsFlipped(false);
+        setSlideDirection('left');
+        setCurrentIndex(prev => (prev + 1) % flashcards.length);
+        updateDeckProgress();
     }
 
     const handlePrevious = () => {
@@ -99,9 +117,10 @@ export default function FlashcardPage({ params }) {
             setIsUnsavedWarningOpen(true)
             return
         }
-        setIsFlipped(false)
-        setSlideDirection('right')
-        setCurrentIndex(prev => (prev - 1 + flashcards.length) % flashcards.length)
+        setIsFlipped(false);
+        setSlideDirection('right');
+        setCurrentIndex(prev => (prev - 1 + flashcards.length) % flashcards.length);
+        updateDeckProgress();
     }
 
     const handleDelete = async () => {
@@ -203,6 +222,39 @@ export default function FlashcardPage({ params }) {
         setTempBackContent('')
         setHasUnsavedChanges(false)
     }
+
+    const updateDeckProgress = async () => {
+        try {
+            const supabase = createClient();
+
+            setViewedCards(prev => new Set(prev).add(currentIndex));
+
+            const totalCards = flashcards.length;
+            const viewedCardsCount = viewedCards.size;
+            const progressPercentage = Math.round((viewedCardsCount / totalCards) * 100);
+
+            console.log('Updating progress:', {
+                viewedCardsCount,
+                totalCards,
+                progressPercentage,
+                currentIndex
+            });
+
+            const { error } = await supabase
+                .from('flashcard_decks')
+                .update({
+                    last_viewed_at: new Date().toISOString(),
+                    last_viewed_card_index: currentIndex,
+                    total_cards_viewed: viewedCardsCount,
+                    progress_percentage: progressPercentage
+                })
+                .eq('id', deckId);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error updating deck progress:', error);
+        }
+    };
 
     if (loading) return <div className="flex h-screen items-center justify-center"><Spinner /></div>
     if (error) return <div className="text-red-500">Error: {error}</div>

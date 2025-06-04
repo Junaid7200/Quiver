@@ -21,7 +21,7 @@ export const metadata = {
 export default function FeaturesPage({ children }) {
   return (
         
-        <div className="flex h-screen">
+        <div className="flex h-screen bg-[#09090B]">
           <Sidebar />
           <div className="flex-1 flex flex-col">
             <div className="flex justify-end pt-[1%] pr-[2%]">

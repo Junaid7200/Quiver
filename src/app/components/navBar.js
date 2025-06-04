@@ -3,8 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createClient } from '../../utils/supabase/client.ts'
 import { useRouter } from "next/navigation";
-import { useTheme } from '../components/ThemeContext';
-import Link from "next/link";
+import { useTheme } from './ThemeContext.jsx';
 
 export default function NavBar() {
     const [user, setUser] = useState(null);
@@ -72,7 +71,7 @@ export default function NavBar() {
     };
 
     return (
-        <div className="w-[15%] flex justify-end">
+        <div className="w-[15%] flex justify-end bg-[#09090B]">
             <button 
                 onClick={toggleTheme} 
                 className='light-dark-mode-button pr-[22px] transition-transform hover:scale-110'

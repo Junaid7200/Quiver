@@ -20,7 +20,99 @@ export default function flashcards() {
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
     const [generatedFlashcards, setGeneratedFlashcards] = useState([]); // to Store flashcards temporarily
     const [generatedDeck, setGeneratedDeck] = useState(null);
+    const [decks, setDecks] = useState([]);
+    const [filterType, setFilterType] = useState('all'); // 'all', 'completed', 'incomplete'
+    const [loadingDecks, setLoadingDecks] = useState(true);
+    const [currentSuggestion, setCurrentSuggestion] = useState(null);
+    const [suggestionsLoading, setSuggestionsLoading] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        const fetchDecks = async () => {
+            try {
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
+
+                const { data: decksData, error } = await supabase
+                    .from('flashcard_decks')
+                    .select(`
+                    *,
+                    flashcards:flashcards(count)
+                `)
+                    .eq('user_id', user.id);
+
+                if (error) throw error;
+                setDecks(decksData);
+            } catch (error) {
+                console.error('Error fetching decks:', error);
+            } finally {
+                setLoadingDecks(false);
+            }
+        };
+
+        fetchDecks();
+    }, []);
+
+    const generateSuggestion = async () => {
+        setSuggestionsLoading(true);
+        try {
+            // Get the last viewed deck
+            const lastViewedDeck = decks.reduce((latest, deck) => {
+                if (!latest || !latest.last_viewed_at) return deck;
+                return new Date(deck.last_viewed_at) > new Date(latest.last_viewed_at) ? deck : latest;
+            }, null);
+
+            if (!lastViewedDeck) {
+                setCurrentSuggestion({
+                    deckName: null,
+                    message: "Start reviewing your flashcard decks to get AI suggestions!"
+                });
+                return;
+            }
+
+            // Get flashcards of the last viewed deck
+            const supabase = createClient();
+            const { data: flashcards, error } = await supabase
+                .from('flashcards')
+                .select('front_content, back_content')
+                .eq('deck_id', lastViewedDeck.id);
+
+            if (error) throw error;
+
+            // Generate suggestion using the API
+            const response = await fetch('/api/suggestions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    deckName: lastViewedDeck.name,
+                    flashcards: flashcards
+                }),
+            });
+
+            const data = await response.json();
+            setCurrentSuggestion({
+                deckName: lastViewedDeck.name,
+                message: data.suggestion
+            });
+
+        } catch (error) {
+            console.error('Error generating suggestion:', error);
+            setCurrentSuggestion({
+                deckName: null,
+                message: "Couldn't generate suggestions at the moment."
+            });
+        } finally {
+            setSuggestionsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (decks.length > 0 && !currentSuggestion) {
+            generateSuggestion();
+        }
+    }, [decks]);
 
     //Toggling selection of a note when clicked
     const handleNoteSelect = (noteId) => {
@@ -114,6 +206,10 @@ export default function flashcards() {
                 name: selectedNoteData.title,
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
+                last_viewed_at: null,
+                last_viewed_card_index: 0,
+                total_cards_viewed: 0,
+                progress_percentage: 0
             };
 
             // Generating flashcards using Grok API
@@ -277,7 +373,7 @@ export default function flashcards() {
     }
 
     return (
-        <main className='w-[100%] h-auto min-h-screen pr-[1%]'>
+        <main className='w-[100%] h-auto min-h-screen pr-[1%] bg-[#09090B]'>
             <div className='upper flex justify-between w-[100%] mb-[3%]'>
                 <div className='upper-left'>
                     <div className='flex items-end mb-[3%]'>
@@ -296,15 +392,166 @@ export default function flashcards() {
             </div>
             <div className="lower flex justify-between w-[100%] pb-[7%]">
                 <div className="lower-left flex flex-col gap-[50px] w-[40%] mr-[3%] ml-[2%]">
-                    <div className=" lower-left-upper border border-solid border-[#27272A] rounded-lg w-[100%] h-[400px] overflow-y-auto custom-scrollbar px-[1%] py-[10%]">
+                    <div className=" lower-left-upper border border-solid border-[#27272A] rounded-lg w-[100%] h-[400px] overflow-y-auto px-[1%] py-[10%]">
 
                     </div>
-                    <div className="lower-left-lower border border-solid border-[#27272A] rounded-lg w-[100%] h-[200px] overflow-y-auto custom-scrollbar px-[1%] py-[10%]">
+                    <div className="lower-left-lower border border-solid border-[#27272A] rounded-lg w-[100%] h-[240px] overflow-hidden">
+                        {/* Header Section */}
+                        <div className="border-b border-[#27272A]">
+                            <div className="flex items-center gap-4 px-6 py-4">
+                                <div className="bg-[#09090B] rounded-lg p-2">
+                                    <Image
+                                        src="/Assets/ai-icon.svg"
+                                        width={30}
+                                        height={30}
+                                        alt="AI"
+                                    />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-1">AI Suggestions</h2>
+                                    <p className="text-sm text-[#A1A1AA]">Improve your flashcard decks</p>
+                                </div>
+                            </div>
+                        </div>
+                        {/*Content*/}
+                        <div className="p-6 relative h-[calc(100%-88px)]">
+                            {suggestionsLoading ? (
+                                <div className="flex justify-center items-center h-full">
+                                    <Spinner />
+                                </div>
+                            ) : currentSuggestion ? (
+                                <div className="bg-[#27272A] rounded-xl p-6 relative group overflow-y-auto custom-scrollbar">
+                                    <div className="flex items-start gap-4">
 
+                                        <div>
+                                            {currentSuggestion.deckName && (
+                                                <p className="text-sm text-[#32E0C4] mb-2">
+                                                    Regarding "{currentSuggestion.deckName}"
+                                                </p>
+                                            )}
+                                            <p className="text-white">
+                                                {currentSuggestion.message}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={generateSuggestion}
+                                        className="absolute top-4 right-4 p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110"
+                                    >
+                                        <Image
+                                            src="/Assets/refresh-icon.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="Refresh suggestion"
+                                        />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex justify-center items-center h-full text-[#A1A1AA]">
+                                    No suggestions available
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
-                <div className="lower-right border-1 border-solid border-[#27272A] rounded-lg w-[52%] h-[650px] verflow-y-auto custom-scrollbar ml-[3%] px-[1%] py-[10%]">
+                <div className="lower-right border-1 border-solid border-[#27272A] rounded-lg w-[69%] h-[690px] ml-[3%] px-[2%] py-[2%]">
+                    <div className="pb-6">
+                        <div className="mb-6">
+                            <p className="text-3xl mb-[1%]">Your Flashcard Decks</p>
+                            <p className="text-md text-[#A1A1AA]">Track your learning progress</p>
+                        </div>
+                        {/* Filter Buttons */}
+                        <div className="flex gap-4 p-1 bg-[#27272A] rounded-2xl w-[62%]">
+                            <button
+                                onClick={() => setFilterType('all')}
+                                className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'all'
+                                    ? 'bg-[#09090B] text-white'
+                                    : 'text-[#A1A1AA] hover:text-white'
+                                    }`}
+                            >
+                                All Decks
+                            </button>
+                            <button
+                                onClick={() => setFilterType('completed')}
+                                className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'completed'
+                                    ? 'bg-[#09090B] text-white'
+                                    : 'text-[#A1A1AA] hover:text-white'
+                                    }`}
+                            >
+                                Completed
+                            </button>
+                            <button
+                                onClick={() => setFilterType('incomplete')}
+                                className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'incomplete'
+                                    ? 'bg-[#09090B] text-white'
+                                    : 'text-[#A1A1AA] hover:text-white'
+                                    }`}
+                            >
+                                Incomplete
+                            </button>
+                        </div>
+                    </div>
 
+                    {/* Decks List */}
+                    <div className="overflow-y-auto h-[calc(100%-140px)] p-4 pt-2 custom-scrollbar">
+                        {loadingDecks ? (
+                            <div className="flex justify-center items-center h-full">
+                                <Spinner />
+                            </div>
+                        ) : decks.length === 0 ? (
+                            <div className="flex justify-center items-center h-full text-[#A1A1AA]">
+                                No flashcard decks found
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {decks
+                                    .filter(deck => {
+                                        if (filterType === 'completed') return deck.progress_percentage === 100;
+                                        if (filterType === 'incomplete') return deck.progress_percentage < 100;
+                                        return true;
+                                    })
+                                    .map(deck => (
+                                        <div
+                                            key={deck.id}
+                                            className="px-4 py-4 rounded-3xl bg-[#27272A] border-l-7 border-[#32E0C4] hover:bg-black transition"
+                                        >
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="text-xl text-white">{deck.name}</h3>
+                                                <span className="text-sm text-[#A1A1AA]">
+                                                    {deck.flashcards[0].count} cards
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-md text-white">Progress</span>
+                                                <span className="text-sm text-white">
+                                                    {deck.progress_percentage}%
+                                                </span>
+                                            </div>
+                                            <div className="w-full bg-[#27272A] rounded-full h-1.5 mb-4">
+                                                <div
+                                                    className="bg-[#32E0C4] h-1.5 rounded-full transition-all duration-300 "
+                                                    style={{ width: `${deck.progress_percentage}%` }}
+                                                />
+                                            </div>
+                                            <div className="flex justify-end gap-4">
+                                                <button
+                                                    onClick={() => router.push(`/flashcards/${deck.id}`)}
+                                                    className="px-6 py-2 text-white hover:text-white transition-colors  border border-[#32E0C4]  rounded-2xl"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => router.push(`/flashcards/${deck.id}`)}
+                                                    className="px-4 py-2 bg-[#32E0C4] text-black rounded-2xl hover:bg-opacity-90 transition-colors"
+                                                >
+                                                    Practice
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
             <NewDeckModal

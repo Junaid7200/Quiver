@@ -56,52 +56,56 @@ export default function flashcards() {
     const generateSuggestion = async () => {
         setSuggestionsLoading(true);
         try {
-            // Get the last viewed deck
-            const lastViewedDeck = decks.reduce((latest, deck) => {
-                if (!latest || !latest.last_viewed_at) return deck;
-                return new Date(deck.last_viewed_at) > new Date(latest.last_viewed_at) ? deck : latest;
-            }, null);
-
-            if (!lastViewedDeck) {
+            // Checking if we have any decks
+            if (decks.length === 0) {
                 setCurrentSuggestion({
                     deckName: null,
-                    message: "Start reviewing your flashcard decks to get AI suggestions!"
+                    message: "Create your first flashcard deck to get AI suggestions!"
                 });
                 return;
             }
 
-            // Get flashcards of the last viewed deck
+            // Randomly select a deck
+            const randomIndex = Math.floor(Math.random() * decks.length);
+            const selectedDeck = decks[randomIndex];
+
+            // Get flashcards of the randomly selected deck
             const supabase = createClient();
             const { data: flashcards, error } = await supabase
                 .from('flashcards')
                 .select('front_content, back_content')
-                .eq('deck_id', lastViewedDeck.id);
+                .eq('deck_id', selectedDeck.id);
 
             if (error) throw error;
 
             // Generate suggestion using the API
-            const response = await fetch('/api/suggestions', {
+            const response = await fetch('/api/AISuggestions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    deckName: lastViewedDeck.name,
+                    deckName: selectedDeck.name,
                     flashcards: flashcards
                 }),
             });
 
+            if (!response.ok) {
+                throw new Error(`API responded with status ${response.status}`);
+            }
+
             const data = await response.json();
+
             setCurrentSuggestion({
-                deckName: lastViewedDeck.name,
+                deckName: selectedDeck.name,
                 message: data.suggestion
             });
-
+            
         } catch (error) {
             console.error('Error generating suggestion:', error);
             setCurrentSuggestion({
                 deckName: null,
-                message: "Couldn't generate suggestions at the moment."
+                message: error.message || "Couldn't generate suggestions at the moment."
             });
         } finally {
             setSuggestionsLoading(false);
@@ -414,13 +418,13 @@ export default function flashcards() {
                             </div>
                         </div>
                         {/*Content*/}
-                        <div className="p-6 relative h-[calc(100%-88px)]">
+                        <div className="py-4 px-6 relative h-[calc(100%-88px)]">
                             {suggestionsLoading ? (
                                 <div className="flex justify-center items-center h-full">
                                     <Spinner />
                                 </div>
                             ) : currentSuggestion ? (
-                                <div className="bg-[#27272A] rounded-xl p-6 relative group overflow-y-auto custom-scrollbar">
+                                <div className="bg-[#27272A] rounded-xl px-6 py-4 h-full relative group overflow-y-auto custom-scrollbar">
                                     <div className="flex items-start gap-4">
 
                                         <div>

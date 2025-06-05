@@ -412,6 +412,8 @@ async function generateFlashcardsFromNote(noteContent) {
     throw error; // Re-throw to be handled by the calling function
   }
 }
+
+
     return (
         <main className='w-[100%] h-auto min-h-screen pr-[1%] bg-[#09090B]'>
             <div className='upper flex justify-between w-[100%] mb-[3%]'>

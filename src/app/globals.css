@@ -297,3 +297,17 @@ html:not(.light-mode) .theme-card {
 .rotate-y-180 {
     transform: rotateY(180deg);
 }
+
+/* Activity Heatmap Colors */
+.react-calendar-heatmap .color-scale-0 { fill: #1A1A1A; }
+.react-calendar-heatmap .color-scale-1 { fill: #2D1B69; }
+.react-calendar-heatmap .color-scale-2 { fill: #4B2CA0; }
+.react-calendar-heatmap .color-scale-3 { fill: #6940D6; }
+.react-calendar-heatmap .color-empty { fill: #27272A; }
+
+/* Heatmap Hover Effects */
+.react-calendar-heatmap rect:hover {
+    stroke: #32E0C4;
+    stroke-width: 1px;
+    transition: all 0.2s ease;
+}

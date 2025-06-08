@@ -199,50 +199,76 @@ const fetchNotes = async (folderId) => {
   };
 
   // Modified function to create a new empty note immediately
-  const createEmptyNote = async () => {
+// Replace your createEmptyNote function with this debugging version:
+const createEmptyNote = async () => {
+    console.log('🚀 Starting createEmptyNote function...');
+    console.log('📁 Current folder ID:', currentFolder);
+    console.log('👤 User ID:', userId);
+    
     if (!currentFolder) {
-      alert("Please select or create a folder first");
-      return;
+        alert("Please select or create a folder first");
+        return;
+    }
+    
+    if (!userId) {
+        alert("User not authenticated");
+        return;
     }
     
     try {
-    const { data, error } = await supabase
-      .from('notes')
-      .insert([
-        {
-          title: 'Untitled Note',
-          folder_id: currentFolder,
-          created_at: new Date().toISOString()
+        console.log('🔄 Creating supabase client...');
+        const supabase = createClient();
+        
+        // First test - simple data structure
+        const noteData = {
+            title: 'Untitled Note',
+            folder_id: currentFolder,
+            created_at: new Date().toISOString()
+        };
+        
+        console.log('📝 Note data to insert:', noteData);
+        
+        console.log('💾 Attempting database insert...');
+        const { data, error } = await supabase
+            .from('notes')
+            .insert(noteData)
+            .select();
+            
+        console.log('✅ Insert response - Data:', data);
+        console.log('❌ Insert response - Error:', error);
+            
+        if (error) {
+            console.error('❌ Database error details:', {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            });
+            alert(`Database Error: ${error.message}`);
+            return;
+        } 
+        
+        if (data && data.length > 0) {
+            console.log('🎉 Note created successfully:', data[0]);
+            console.log('🔄 Refreshing notes list...');
+            
+            // Refresh notes list
+            await fetchNotes(currentFolder);
+            
+            console.log('✨ Note creation completed successfully');
+        } else {
+            console.warn('⚠️ No data returned from insert operation');
         }
-      ])
-      .select();
-      
-    if (error) {
-      console.error('Error creating note:', error);
-    } 
-    else {
-      // Refresh notes list to show the new note
-      fetchNotes(currentFolder);
-
-      // Add a small delay to ensure the newly created note is highlighted
-      setTimeout(() => {
-        // Find the newly created note in the DOM and scroll to it
-        const noteElement = document.getElementById(`note-${data[0].id}`);
-        if (noteElement) {
-          noteElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          noteElement.classList.add('animate-pulse-highlight');
-          setTimeout(() => {
-            noteElement.classList.remove('animate-pulse-highlight');
-          }, 2000);
-        }
-      }, 100);
+        
+    } catch (exception) {
+        console.error('💥 Exception caught in createEmptyNote:', {
+            name: exception.name,
+            message: exception.message,
+            stack: exception.stack
+        });
+        alert(`Exception: ${exception.message}`);
     }
-    }
-    catch {
-      console.error('Error creating note:', error);
-    }
-
-  };
+};
 
 
   const updateFolderName = async () => {

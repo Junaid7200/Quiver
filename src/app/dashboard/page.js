@@ -217,17 +217,17 @@ export default function dashboard() {
                 const today = new Date();
                 const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
-                // Fetch flashcard activity
-                const { data: flashcardActivity } = await supabase
-                    .from('flashcard_activity')
-                    .select('date, activity_count')
-                    .eq('user_id', user.id)
-                    .gte('date', startDate.toISOString())
-                    .lte('date', today.toISOString());
+                            // Fetch flashcard activity
+            const { data: flashcardActivity } = await supabase
+                .from('flashcard_activity')
+                .select('date, cards_studied')  // ✅ Correct column name
+                .eq('user_id', user.id)
+                .gte('date', startDate.toISOString().split('T')[0])  // ✅ Use date format
+                .lte('date', today.toISOString().split('T')[0]);
 
                 setActivityData(flashcardActivity?.map(day => ({
                     date: day.date,
-                    count: day.activity_count
+                    count: day.cards_studied
                 })) || []);
             } catch (error) {
                 console.error("Error fetching activity data:", error);

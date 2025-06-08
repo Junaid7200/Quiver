@@ -219,7 +219,7 @@ export default function dashboard() {
 
                 // Fetch flashcard activity
                 const { data: flashcardActivity } = await supabase
-                    .from('user_activity')
+                    .from('flashcard_activity')
                     .select('date, activity_count')
                     .eq('user_id', user.id)
                     .gte('date', startDate.toISOString())

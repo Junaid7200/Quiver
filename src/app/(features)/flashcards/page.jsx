@@ -419,7 +419,7 @@ async function generateFlashcardsFromNote(noteContent) {
             <div className='upper flex justify-between w-[100%] mb-[3%]'>
                 <div className='upper-left'>
                     <div className='flex items-end mb-[3%]'>
-                        <Image src='/Assets/flashcards-colored.svg' width={35} height={35} alt='flashcards icon' className="mr-[2%]"></Image>
+                        <Image src='/Assets/flashcards-colored.svg' width={40} height={40} alt='flashcards icon' className="mr-[2%]"></Image>
                         <p className='text-4xl'>Flashcards</p>
                     </div>
                     <p className="text-[#A1A1AA]">Create and practise with spaced repetition.</p>
@@ -444,8 +444,8 @@ async function generateFlashcardsFromNote(noteContent) {
                                 <div className="bg-[#09090B] rounded-lg p-2">
                                     <Image
                                         src="/Assets/ai-icon.svg"
-                                        width={30}
-                                        height={30}
+                                        width={35}
+                                        height={35}
                                         alt="AI"
                                     />
                                 </div>
@@ -504,8 +504,8 @@ async function generateFlashcardsFromNote(noteContent) {
                                     <div className="bg-[#09090B] rounded-lg p-2">
                                         <Image
                                             src="/Assets/decks-icon.svg"
-                                            width={35}
-                                            height={35}
+                                            width={40}
+                                            height={40}
                                             alt="AI"
                                         />
                                     </div>

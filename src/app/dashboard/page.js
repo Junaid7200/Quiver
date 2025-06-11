@@ -146,8 +146,13 @@ export default function dashboard() {
                     .limit(1)
                     .single();
 
-                if (error) throw error;
-                setLastIncompleteDeck(decks);
+                if (error && error.code !== 'PGRST116') { // Handle "no rows found" error gracefully
+                    console.error("Error fetching incomplete deck:", error);
+                    return;
+                }
+                setLastIncompleteDeck(decks || null);
+                //if (error) throw error;
+                //setLastIncompleteDeck(decks);
             } catch (error) {
                 console.error("Error fetching incomplete deck:", error);
             }
@@ -177,6 +182,7 @@ export default function dashboard() {
 
                 if (!folders || folders.length === 0) {
                     console.log("No folders found for user");
+                    setLastEditedNote(null); // Set lastEditedNote to null
                     return;
                 }
 
@@ -196,7 +202,7 @@ export default function dashboard() {
                 }
 
 
-                setLastEditedNote(notes);
+                setLastEditedNote(notes || null);
             } catch (error) {
                 console.error("Unexpected error:", error);
             }
@@ -217,13 +223,13 @@ export default function dashboard() {
                 const today = new Date();
                 const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
-                            // Fetch flashcard activity
-            const { data: flashcardActivity } = await supabase
-                .from('flashcard_activity')
-                .select('date, cards_studied')  // ✅ Correct column name
-                .eq('user_id', user.id)
-                .gte('date', startDate.toISOString().split('T')[0])  // ✅ Use date format
-                .lte('date', today.toISOString().split('T')[0]);
+                // Fetch flashcard activity
+                const { data: flashcardActivity } = await supabase
+                    .from('flashcard_activity')
+                    .select('date, cards_studied')  // ✅ Correct column name
+                    .eq('user_id', user.id)
+                    .gte('date', startDate.toISOString().split('T')[0])  // ✅ Use date format
+                    .lte('date', today.toISOString().split('T')[0]);
 
                 setActivityData(flashcardActivity?.map(day => ({
                     date: day.date,
@@ -287,7 +293,7 @@ export default function dashboard() {
     };
 
     return (
-        <main className="min-h-screen w-[100%] mt-[3%] bg-[#09090B] pb-[10%]">
+        <main className="min-h-screen w-[100%] mt-[3%] bg-[#09090B] pb-[10%] overflow-y-auto custom-scrollbar">
             <p className='text-4xl pb-[1%]'>Welcome back, {firstname}!</p>
             <p className="text-[#A1A1AA] mb-[2%] text-lg">Track your learning progress and continue where you left off.</p>
             <article className="w-full flex flex-col items-center gap-20 mt-[4%] px-[3%]">
@@ -479,7 +485,7 @@ export default function dashboard() {
                             <ActivityHeatmap data={activityData} onDateSelect={handleDateSelect} />
                         </div>
                         <div className="w-1/2 flex flex-col gap-4">
-                            <div className="bg-[#27272A] rounded-xl overflow-hidden"> 
+                            <div className="bg-[#27272A] rounded-xl overflow-hidden">
                                 <div className="px-4 py-3 border-b border-[#1A1A1A]"> {/* Header section */}
                                     <h3 className="text-xl flex items-center gap-2">
                                         <Image

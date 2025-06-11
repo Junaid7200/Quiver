@@ -20,13 +20,13 @@ export const metadata = {
 
 export default function DashboardPage({ children }) {
   return (
-        <div className="flex min-h-screen bg-[#09090B]">
+        <div className="flex min-h-screen bg-[#09090B] overflow-y-auto custom-scrollbar">
           <Sidebar />
           <div className="flex-1 flex flex-col bg-[#09090B]">
             <div className="flex justify-end pt-[1%] pr-[2%] bg-[#09090B] sticky top-0 z-10 right-0">
               <NavBar />
             </div>
-            <main className="px-[4%] bg-[#09090B]">{children}</main>
+            <main className="px-[4%] bg-[#09090B] overflow-y-auto custom-scrollbar">{children}</main>
           </div>
         </div>
   );

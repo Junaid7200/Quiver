@@ -364,54 +364,54 @@ export default function flashcards() {
     };
 
     // function for Grok API integration
-async function generateFlashcardsFromNote(noteContent) {
-  try {
-    if (!noteContent) {
-      throw new Error('Note content is required');
+    async function generateFlashcardsFromNote(noteContent) {
+        try {
+            if (!noteContent) {
+                throw new Error('Note content is required');
+            }
+
+            const plainTextContent = stripHtmlButPreserveStructure(noteContent);
+
+            // Limit content length if needed
+            const truncatedContent = plainTextContent.length > 4000
+                ? plainTextContent.substring(0, 4000) + "..."
+                : plainTextContent;
+
+            console.log('Sending note content to API:', truncatedContent.substring(0, 100) + '...'); // Debug log
+
+            const response = await fetch('/api/flashcards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: truncatedContent }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('API Error:', errorData); // Debug log
+                throw new Error(errorData.error || 'Failed to generate flashcards');
+            }
+
+            const data = await response.json();
+
+            if (!data.flashcards || !Array.isArray(data.flashcards)) {
+                console.error('Invalid response format:', data); // Debug log
+                throw new Error('Invalid flashcard data received');
+            }
+
+            if (data.flashcards.length === 0) {
+                throw new Error('No flashcards were generated');
+            }
+
+            console.log('Generated flashcards:', data.flashcards); // Debug log
+            return data.flashcards;
+
+        } catch (error) {
+            console.error('Error in generateFlashcardsFromNote:', error);
+            throw error; // Re-throw to be handled by the calling function
+        }
     }
-
-    const plainTextContent = stripHtmlButPreserveStructure(noteContent);
-    
-    // Limit content length if needed
-    const truncatedContent = plainTextContent.length > 4000 
-      ? plainTextContent.substring(0, 4000) + "..." 
-      : plainTextContent;
-
-    console.log('Sending note content to API:', truncatedContent.substring(0, 100) + '...'); // Debug log
-
-    const response = await fetch('/api/flashcards', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ content: truncatedContent }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('API Error:', errorData); // Debug log
-      throw new Error(errorData.error || 'Failed to generate flashcards');
-    }
-
-    const data = await response.json();
-
-    if (!data.flashcards || !Array.isArray(data.flashcards)) {
-      console.error('Invalid response format:', data); // Debug log
-      throw new Error('Invalid flashcard data received');
-    }
-    
-    if (data.flashcards.length === 0) {
-      throw new Error('No flashcards were generated');
-    }
-
-    console.log('Generated flashcards:', data.flashcards); // Debug log
-    return data.flashcards;
-
-  } catch (error) {
-    console.error('Error in generateFlashcardsFromNote:', error);
-    throw error; // Re-throw to be handled by the calling function
-  }
-}
 
 
     return (
@@ -518,7 +518,7 @@ async function generateFlashcardsFromNote(noteContent) {
 
                             <div className='px-[5%] py-[2%]'>
                                 {/* Filter Buttons */}
-                                <div className="flex gap-4 p-1 bg-[#27272A] rounded-2xl w-[68S%]">
+                                <div className="flex gap-4 p-1 bg-[#27272A] rounded-2xl w-[68%]">
                                     <button
                                         onClick={() => setFilterType('all')}
                                         className={`px-6 py-2 rounded-2xl transition-colors ${filterType === 'all'
@@ -550,7 +550,7 @@ async function generateFlashcardsFromNote(noteContent) {
                             </div>
 
                             {/* Decks List */}
-                            <div className="flex-1 overflow-y-auto py-4 px-[5%] pt-2 custom-scrollbar">
+                            <div className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-[5%] pt-2 custom-scrollbar">
                                 {loadingDecks ? (
                                     <div className="flex justify-center items-center h-full">
                                         <Spinner />
@@ -581,13 +581,13 @@ async function generateFlashcardsFromNote(noteContent) {
                                                     <div className="flex justify-between items-center mb-2">
                                                         <span className="text-md text-white">Progress</span>
                                                         <span className="text-sm text-white">
-                                                            {deck.progress_percentage}%
+                                                            {Math.min(deck.progress_percentage, 100)}% 
                                                         </span>
                                                     </div>
                                                     <div className="w-full bg-[#27272A] rounded-full h-1.5 mb-4">
                                                         <div
-                                                            className="bg-[#32E0C4] h-1.5 rounded-full transition-all duration-300 "
-                                                            style={{ width: `${deck.progress_percentage}%` }}
+                                                            className="bg-[#32E0C4] h-1.5 rounded-full transition-all duration-300"
+                                                            style={{ width: `${Math.min(deck.progress_percentage, 100)}%` }} 
                                                         />
                                                     </div>
                                                     <div className="flex justify-end gap-4">

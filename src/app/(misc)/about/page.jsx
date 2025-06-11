@@ -17,9 +17,9 @@ export default function AboutPage() {
           <p className="text-[28px]">Quiver</p>
         </div>
         <div className="flex items-center space-x-8">
-          <Link href="/" className="text-[#635C70] hover:text-white transition-colors">Home</Link>
-          <Link href="/contact" className="text-[#635C70] hover:text-white transition-colors">Contact</Link>
-          <Link href="/privacy" className="text-[#635C70] hover:text-white transition-colors">Privacy</Link>
+          <Link href="../../page.js" className="text-[#635C70] hover:text-white transition-colors">Home</Link>
+          <Link href="../contact/page.jsx" className="text-[#635C70] hover:text-white transition-colors">Contact</Link>
+          <Link href="../privacy/page.jsx" className="text-[#635C70] hover:text-white transition-colors">Privacy</Link>
           <button 
             onClick={() => router.push('/signin')}
             className="px-5 py-2 rounded-md text-white bg-[#5222D0] flex items-center justify-center tracking-wider transition-all duration-300 hover:shadow-[0_0_15px_rgba(82,34,208,0.5)] hover:scale-105"

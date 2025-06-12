@@ -53,8 +53,8 @@ const ActivityHeatmap = ({ activity }) => {
                     <div className="bg-[#09090B] rounded-lg p-2">
                         <Image
                             src="/Assets/calendar-icon.svg"
-                            width={35}
-                            height={35}
+                            width={45}
+                            height={45}
                             alt="AI"
                         />
                     </div>
@@ -111,11 +111,11 @@ const ActivityHeatmap = ({ activity }) => {
                                                     </span>
                                                 </div>
 
-                                                {/* Tooltip */}
+                                                {/* Tooltip
                                                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-[#18181B] text-white text-md rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                                                     {format(day, 'MMM d, yyyy')}: {' '}
                                                     {activity.find(a => format(new Date(a.date), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd'))?.cards_studied || 0} cards studied
-                                                </div>
+                                                </div> */}
                                             </div>
                                         );
                                     })}

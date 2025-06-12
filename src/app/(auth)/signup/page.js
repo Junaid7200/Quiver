@@ -24,6 +24,8 @@ import AppleIcon from '../../components/AppleIcon';
 export default function SignUpPage() {
   const router = useRouter();
   const supabase = createClient();
+
+
   // Add CSS keyframes for animations
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -85,39 +87,6 @@ export default function SignUpPage() {
   };
 
 
-
-const FormProgressIndicator = ({ formData }) => {
-  // Calculate completion percentage
-  const requiredFields = ['firstName', 'lastName', 'username', 'email', 'password', 'confirmPassword'];
-  const filledFields = requiredFields.filter(field => formData[field].trim() !== '').length;
-  const progress = Math.floor((filledFields / requiredFields.length) * 100);
-  
-  // Calculate color based on progress
-  let progressColor = '#475569'; // Default gray
-  
-  if (progress > 30) progressColor = '#6366f1'; // Indigo
-  if (progress > 60) progressColor = '#8b5cf6'; // Purple
-  if (progress > 80) progressColor = '#5222D0'; // Brand purple
-  if (progress === 100 && formData.agreeToTerms) progressColor = '#10b981'; // Green for complete
-  
-  return (
-    <div className="w-full mb-6">
-      <div className="flex justify-between text-xs text-gray-400 mb-1">
-        <span>Progress</span>
-        <span className="font-semibold">{progress}%{formData.agreeToTerms ? ' ✓' : ''}</span>
-      </div>
-      <div className="h-1 w-full bg-gray-700 rounded-full overflow-hidden">
-        <div 
-          className="h-full transition-all duration-300 ease-out"
-          style={{ 
-            width: `${progress}%`, 
-            backgroundColor: progressColor 
-          }}
-        />
-      </div>
-    </div>
-  );
-};
   const validateForm = () => {
     let errors = {};
     let isValid = true;

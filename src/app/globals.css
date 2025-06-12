@@ -111,8 +111,6 @@ html:not(.light-mode) .theme-card {
 }
 
 
-
-/*designing for the aim, note, navigate in the landing page*/
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -181,7 +179,6 @@ html:not(.light-mode) .theme-card {
   display: none;
 }
 
-/* Add this at the bottom of your file */
 @keyframes pulse-highlight {
   0%, 100% {
     transform: scale(1);
@@ -266,7 +263,6 @@ html:not(.light-mode) .theme-card {
   background-color: rgba(155, 135, 245, 0.3) !important;
 }
 
-//sliding animation when changing flashcards
 @keyframes slideLeft {
     from { transform: translateX(0); }
     to { transform: translateX(-100%); }
@@ -285,7 +281,6 @@ html:not(.light-mode) .theme-card {
     animation: slideRight 0.5s ease-in-out;
 }
 
-//flipping animations wehn flipping flashcard
 .transform-style-preserve-3d {
     transform-style: preserve-3d;
 }
